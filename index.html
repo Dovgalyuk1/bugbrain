@@ -39,16 +39,6 @@ img{display:block;max-width:100%}
 .grain{background-image:radial-gradient(rgba(255,255,255,.55) .5px,transparent .6px);background-size:3px 3px;mix-blend-mode:overlay;opacity:.10}
 .scan{background:repeating-linear-gradient(rgba(0,0,0,.22) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;opacity:.5}
 
-/* ---------- gate ---------- */
-#gate{position:fixed;inset:0;z-index:200;background:#020307;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;cursor:pointer;text-align:center;padding:20px}
-#gate .gb{width:min(460px,72vw);opacity:.9;mix-blend-mode:screen;animation:pulseb 3.4s ease-in-out infinite;
-  -webkit-mask-image:radial-gradient(ellipse 58% 58% at 50% 48%,#000 56%,transparent 84%);mask-image:radial-gradient(ellipse 58% 58% at 50% 48%,#000 56%,transparent 84%)}
-@keyframes pulseb{50%{opacity:.55;filter:hue-rotate(24deg)}}
-#gate h2{font-family:var(--disp);font-size:clamp(22px,4.4vw,40px);letter-spacing:.16em;margin:0;color:#fff;text-shadow:0 0 22px rgba(75,227,255,.7)}
-#gate p{color:var(--dim);margin:0;font-size:13px;letter-spacing:.22em}
-#gate .en{border:1px solid var(--cy);color:var(--cy);padding:11px 26px;letter-spacing:.28em;font-size:12px;box-shadow:0 0 26px rgba(75,227,255,.28) inset;animation:blinkk 1.4s steps(2) infinite}
-@keyframes blinkk{50%{opacity:.35}}
-
 /* ---------- top bar ---------- */
 header{position:sticky;top:0;z-index:50;background:rgba(4,5,11,.86);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
 .hb{display:flex;align-items:center;gap:14px;padding:9px 0;flex-wrap:wrap}
@@ -249,13 +239,6 @@ footer .sp{flex:1}
 </head>
 <body>
 <div class="grain"></div><div class="scan"></div>
-
-<div id="gate">
-  <img class="gb" src="brain.webp" alt="a brain waiting for a bug to move in">
-  <h2>BUG BRAIN</h2>
-  <p>PICK AN INSECT BRAIN · IT TRADES FOR YOU</p>
-  <div class="en">CLICK TO ENTER</div>
-</div>
 
 <header>
   <div class="wrap hb">
@@ -528,16 +511,16 @@ document.addEventListener("visibilitychange",function(){
   else if(!document.hidden&&MU.on&&!MU.t){ var c=ac(); if(c){ MU.next=c.currentTime+.1; MU.t=setInterval(musSchedule,90); } }
 });
 
-/* ---------------- gate ---------------- */
-var gate=document.getElementById("gate"), opened=false;
-function openGate(){
-  if(opened) return; opened=true;
-  gate.style.transition="opacity .5s"; gate.style.opacity="0";
-  setTimeout(function(){ gate.style.display="none"; },520);
-  tone(220,880,.28,"square",.05); setTimeout(function(){ buzz(.5,110,.04); },120);
+/* ---------------- first interaction ---------------- */
+var kicked=false;
+function kick(){
+  if(kicked) return; kicked=true;
+  var c=ac(); if(!c) return;
+  if(!MU.on){ MU.on=true; musBtn.textContent="MUSIC: ON"; musBtn.classList.add("on"); MU.next=c.currentTime+.1; MU.t=setInterval(musSchedule,90); }
+  tone(220,880,.22,"square",.04);
 }
-gate.addEventListener("click",openGate);
-setTimeout(openGate,25000);
+document.addEventListener("pointerdown",kick,{once:false});
+document.addEventListener("keydown",kick,{once:false});
 
 /* ---------------- marquee ---------------- */
 var MQ=["brain shelf fully stocked","fly brain has refreshed the chart 19,441 times today","ant brain still waiting on the colony","moth brain long the brightest candle","scorpion brain asleep, positions open","mosquito brain can smell your wallet from the lobby","cricket brain only trades after dark","firefly brain burned the liquidity, on purpose","termite brain is eating the support level","mantis brain holds everything very still and then does not"];
