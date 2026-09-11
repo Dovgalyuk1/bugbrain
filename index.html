@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BUG BRAIN — 20 AI agents, each running on a real insect brain</title>
-<meta name="description" content="BUG BRAIN ($BBRAIN). Twenty AI trading agents, each one running on a different insect brain. Deploy one and it trades for you — you only decide when to let it cook.">
+<title>NEUROFLY — 20 AI agents, each running on a real insect brain</title>
+<meta name="description" content="NEUROFLY ($NFLY). Twenty AI trading agents, each one running on a different insect brain. Deploy one and it trades for you — you only decide when to let it cook.">
 <link rel="icon" href="favicon.png">
-<meta property="og:title" content="BUG BRAIN — 20 AI agents, each running on a real insect brain">
+<meta property="og:title" content="NEUROFLY — 20 AI agents, each running on a real insect brain">
 <meta property="og:description" content="20 AI agents. 20 insect brains. Deploy one and it starts trading.">
 <meta property="og:image" content="fly.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -245,15 +245,15 @@ footer .sp{flex:1}
 
 <header>
   <div class="wrap hb">
-    <div class="logo"><i></i>BUG BRAIN</div>
-    <div class="tickchip">$BBRAIN</div>
+    <div class="logo"><i></i>NEUROFLY</div>
+    <div class="tickchip">$NFLY</div>
     <div class="sp"></div>
     <div class="snd">
       <button id="sfxBtn" class="on">SOUND: ON</button>
       <button id="musBtn">MUSIC: OFF</button>
     </div>
     <a class="btn ghost xLink" id="xBtn" href="#" target="_blank" rel="noopener">X</a>
-    <a class="btn soon" id="buyBtn" href="#">BUY $BBRAIN</a>
+    <a class="btn soon" id="buyBtn" href="#">BUY $NFLY</a>
   </div>
 </header>
 
@@ -310,7 +310,7 @@ footer .sp{flex:1}
     </div>
     <div class="term">
       <div class="tbar">
-        <div class="pill">PAIR <b>BBRAIN/USD</b></div>
+        <div class="pill">PAIR <b>NFLY/USD</b></div>
         <div class="pill">FEED <b id="feedState">LIVE</b></div>
         <div class="pill">AGENT <b id="opName">—</b></div>
         <div class="sp"></div>
@@ -319,7 +319,7 @@ footer .sp{flex:1}
       <div class="tgrid">
         <div class="chartwrap">
           <canvas id="chart"></canvas>
-          <div class="price">BBRAIN/USD <b id="pxVal">0.0000</b><u id="pxDelta">+0.00%</u></div>
+          <div class="price">NFLY/USD <b id="pxVal">0.0000</b><u id="pxDelta">+0.00%</u></div>
         </div>
         <div class="side">
           <div class="stats">
@@ -390,7 +390,7 @@ footer .sp{flex:1}
 
 <footer>
   <div class="wrap hb" style="padding:0">
-    <div class="logo"><i></i>BUG BRAIN · $BBRAIN</div>
+    <div class="logo"><i></i>NEUROFLY · $NFLY</div>
     <div class="sp"></div>
     <span>20 AGENTS · 20 BRAINS · ALL LIVE</span>
     <a class="btn ghost xLink" href="#" target="_blank" rel="noopener">X</a>
@@ -690,7 +690,7 @@ function plugIn(id){
   document.getElementById("instSub").textContent="AGENT-"+(BRAINS.indexOf(b)+1<10?"0":"")+(BRAINS.indexOf(b)+1)+" · "+b.n+" BRAIN · SYNAPSE HANDSHAKE";
   var bar=document.getElementById("instBar"), lines=document.getElementById("instLines");
   lines.innerHTML=""; bar.style.width="0%";
-  var steps=["opening the jar","loading "+b.id+"-v1 weights","mapping "+b.nn+" neurons to the price feed","wiring optic lobe to BBRAIN/USD","it has opinions now","handing it the account"];
+  var steps=["opening the jar","loading "+b.id+"-v1 weights","mapping "+b.nn+" neurons to the price feed","wiring optic lobe to NFLY/USD","it has opinions now","handing it the account"];
   var k=0;
   buzz(.35,70,.05);
   var iv=setInterval(function(){
@@ -732,7 +732,7 @@ function nextSignal(){
   waiting=true;
   PEND={dir:dir,lev:lev,reason:reason};
   document.getElementById("sigLn").textContent="SIGNAL "+(sig+1)+" / 8 · "+(dir>0?"LONG":"SHORT")+" "+lev+"x";
-  document.getElementById("sigTx").innerHTML='<u>'+CUR.cn.toLowerCase()+':</u> "'+reason+'" — '+(dir>0?"long":"short")+" "+lev+"x on bbrain/usd.";
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.cn.toLowerCase()+':</u> "'+reason+'" — '+(dir>0?"long":"short")+" "+lev+"x on nfly/usd.";
   buzz(.12,dir>0?260:190,.045);
   log("<b>signal "+(sig+1)+"</b> · "+(dir>0?"long":"short")+" "+lev+"x — "+reason,"m");
 }
