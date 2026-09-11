@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BUG BRAIN — pick an insect brain, it trades for you</title>
+<meta name="description" content="BUG BRAIN ($BBRAIN). Pick one of 20 insect brains. It plugs into the terminal and starts trading. You only decide when to let it cook.">
+<link rel="icon" href="favicon.png">
+<meta property="og:title" content="BUG BRAIN — pick an insect brain, it trades for you">
+<meta property="og:description" content="20 insect brains. One terminal. Pick a brain, it starts trading.">
+<meta property="og:image" content="brain.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04050b; --bg2:#080b16; --panel:#0b1020; --line:#1b2540;
+  --cy:#4be3ff; --mg:#ff4ecd; --li:#b6ff3a; --am:#ffc64b; --rd:#ff5d5d;
+  --tx:#dce7ff; --dim:#7d8cb5;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --disp:"Chakra Petch",system-ui,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 620px at 78% -8%, rgba(75,227,255,.16), transparent 62%),
+    radial-gradient(900px 560px at 8% 18%, rgba(255,78,205,.13), transparent 60%),
+    var(--bg);
+  color:var(--tx); font-family:var(--mono); font-size:15px; line-height:1.55;
+  overflow-x:clip; -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{width:min(1240px,92vw);margin:0 auto}
+
+/* ---------- film layers ---------- */
+.grain,.scan{position:fixed;inset:0;pointer-events:none;z-index:60}
+.grain{background-image:radial-gradient(rgba(255,255,255,.55) .5px,transparent .6px);background-size:3px 3px;mix-blend-mode:overlay;opacity:.10}
+.scan{background:repeating-linear-gradient(rgba(0,0,0,.22) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;opacity:.5}
+
+/* ---------- gate ---------- */
+#gate{position:fixed;inset:0;z-index:200;background:#020307;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;cursor:pointer;text-align:center;padding:20px}
+#gate .gb{width:min(460px,72vw);opacity:.9;mix-blend-mode:screen;animation:pulseb 3.4s ease-in-out infinite;
+  -webkit-mask-image:radial-gradient(ellipse 58% 58% at 50% 48%,#000 56%,transparent 84%);mask-image:radial-gradient(ellipse 58% 58% at 50% 48%,#000 56%,transparent 84%)}
+@keyframes pulseb{50%{opacity:.55;filter:hue-rotate(24deg)}}
+#gate h2{font-family:var(--disp);font-size:clamp(22px,4.4vw,40px);letter-spacing:.16em;margin:0;color:#fff;text-shadow:0 0 22px rgba(75,227,255,.7)}
+#gate p{color:var(--dim);margin:0;font-size:13px;letter-spacing:.22em}
+#gate .en{border:1px solid var(--cy);color:var(--cy);padding:11px 26px;letter-spacing:.28em;font-size:12px;box-shadow:0 0 26px rgba(75,227,255,.28) inset;animation:blinkk 1.4s steps(2) infinite}
+@keyframes blinkk{50%{opacity:.35}}
+
+/* ---------- top bar ---------- */
+header{position:sticky;top:0;z-index:50;background:rgba(4,5,11,.86);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+.hb{display:flex;align-items:center;gap:14px;padding:9px 0;flex-wrap:wrap}
+.logo{font-family:var(--disp);font-size:19px;letter-spacing:.12em;color:#fff;display:flex;align-items:center;gap:8px}
+.logo i{width:9px;height:9px;border-radius:50%;background:var(--li);box-shadow:0 0 12px var(--li);animation:blinkk 1.6s steps(2) infinite;font-style:normal}
+.tickchip{font-size:11px;letter-spacing:.2em;color:var(--cy);border:1px solid rgba(75,227,255,.4);padding:3px 9px}
+.hb .sp{flex:1}
+.btn{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.16em;text-decoration:none;cursor:pointer;
+  border:2px solid #0a0d18;background:var(--li);color:#0a1300;padding:10px 18px;box-shadow:0 4px 0 #4e7a0e;transition:transform .06s,box-shadow .06s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #4e7a0e}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:var(--cy);color:var(--cy)}
+.btn.soon{background:#243050;color:#8ea0cc;box-shadow:0 4px 0 #131a2c;cursor:not-allowed}
+.btn.cy{background:var(--cy);color:#00212b;box-shadow:0 4px 0 #1a7e96}
+.snd{display:flex;gap:6px}
+.snd button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;background:#0c1224;color:var(--dim);border:1px solid var(--line);padding:7px 10px;cursor:pointer}
+.snd button.on{color:var(--li);border-color:rgba(182,255,58,.5)}
+
+/* ---------- marquee ---------- */
+.mq{border-bottom:1px solid var(--line);background:#070a14;overflow:hidden;white-space:nowrap}
+.mq div{display:inline-block;padding:7px 0;animation:mq 34s linear infinite;font-size:12px;letter-spacing:.16em;color:var(--dim)}
+.mq b{color:var(--am);font-weight:500}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- hero ---------- */
+.hero{padding:22px 0 26px}
+.hero-in{display:grid;grid-template-columns:1.06fr .94fr;gap:34px;align-items:center}
+.kick{font-size:11px;letter-spacing:.34em;color:var(--mg)}
+h1{font-family:var(--disp);font-size:clamp(28px,4.1vw,52px);line-height:1.0;margin:8px 0 4px;color:#fff;letter-spacing:.01em;
+  text-shadow:0 0 30px rgba(75,227,255,.35), 3px 3px 0 rgba(255,78,205,.42), -2px -2px 0 rgba(75,227,255,.3)}
+h1 em{font-style:normal;color:var(--li);text-shadow:0 0 26px rgba(182,255,58,.45)}
+.sub{color:var(--tx);font-size:13.5px;max-width:62ch;margin:16px 0 0}
+.sub+.sub{margin-top:9px;color:var(--dim)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0 14px}
+.step{border:1px solid var(--line);background:linear-gradient(180deg,#0b1020,#070a14);padding:10px 11px;position:relative;min-width:0}
+.step b{display:block;font-family:var(--disp);font-size:13px;letter-spacing:.1em;color:#fff;margin-bottom:3px}
+.step span{font-size:11.5px;color:var(--dim);line-height:1.45;display:block}
+.step i{position:absolute;top:-9px;left:11px;font-style:normal;font-size:10px;letter-spacing:.2em;background:var(--cy);color:#00212b;padding:1px 7px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.big{font-size:14px;padding:14px 24px;animation:pulseg 1.9s ease-in-out infinite}
+@keyframes pulseg{50%{box-shadow:0 4px 0 #4e7a0e, 0 0 34px rgba(182,255,58,.55)}}
+.cabox{display:inline-flex;gap:10px;align-items:center;border:1px dashed var(--line);padding:8px 12px;font-size:11.5px;color:var(--dim);cursor:pointer}
+.cabox b{color:var(--cy);font-weight:500}
+
+.brainwrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
+.brainbox{position:relative;width:100%;max-width:520px;max-height:60vh;cursor:pointer}
+.brainbox img{width:100%;max-height:60vh;object-fit:contain;mix-blend-mode:screen;animation:float 7s ease-in-out infinite;
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 48%,#000 58%,transparent 86%);mask-image:radial-gradient(ellipse 60% 60% at 50% 48%,#000 58%,transparent 86%)}
+@keyframes float{50%{transform:translateY(-12px)}}
+#neu{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#drop{position:absolute;inset:-40px -20px -60px;pointer-events:none;overflow:visible;z-index:5}
+.coin{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#fff8c8,var(--am) 58%,#a06d00);
+  border:2px solid #6d4a00;font:700 12px/22px var(--mono);color:#6d4a00;text-align:center}
+.coin:after{content:"$"}
+.poke{position:absolute;left:50%;bottom:2%;transform:translateX(-50%) rotate(-3deg);background:var(--mg);color:#2b0021;font-size:11px;font-weight:700;letter-spacing:.14em;padding:6px 12px;border:2px solid #2b0021;box-shadow:4px 4px 0 rgba(0,0,0,.55);white-space:nowrap;z-index:6}
+
+/* ---------- section frame ---------- */
+section{padding:44px 0}
+.shead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:20px}
+.shead h2{font-family:var(--disp);font-size:clamp(22px,3.2vw,34px);margin:0;letter-spacing:.06em;color:#fff}
+.shead span{font-size:11.5px;color:var(--dim);letter-spacing:.16em}
+.shead .sp{flex:1}
+
+/* ---------- brain grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.bcard{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,#0a0e1c,#05070f);padding:0 0 26px;cursor:pointer;text-align:left;font-family:var(--mono);color:var(--tx);min-width:0;overflow:hidden;transition:border-color .14s,box-shadow .14s}
+.bcard:hover{border-color:var(--cy);box-shadow:0 0 0 1px rgba(75,227,255,.35),0 0 28px rgba(75,227,255,.16)}
+.bcard.sel{border-color:var(--li);box-shadow:0 0 0 1px rgba(182,255,58,.45),0 0 30px rgba(182,255,58,.2)}
+.bcard .top{display:flex;justify-content:space-between;align-items:center;padding:8px 9px 0;font-size:10px;letter-spacing:.14em}
+.bcard .nm{color:#fff;background:#131a2e;padding:2px 7px}
+.bcard .lv{color:var(--li);display:flex;align-items:center;gap:5px}
+.bcard .lv i{width:6px;height:6px;border-radius:50%;background:var(--li);box-shadow:0 0 8px var(--li);animation:blinkk 1.8s steps(2) infinite}
+.bcard img{width:100%;height:auto;mix-blend-mode:screen;filter:saturate(1.2) brightness(1.3) contrast(1.04);transition:transform .2s}
+.bcard:hover img{transform:scale(1.06)}
+.bcard p{margin:0 10px 8px;font-size:11px;color:var(--dim);line-height:1.42;min-height:46px}
+.bars{margin:0 10px 8px;display:grid;gap:4px}
+.bar{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.1em;color:#5d6d95}
+.bar u{text-decoration:none;width:34px}
+.bar span{flex:1;height:5px;background:#121a2e;position:relative;overflow:hidden}
+.bar span b{position:absolute;inset:0 auto 0 0;display:block;background:var(--cy)}
+.bar.r span b{background:var(--mg)}
+.bar.f span b{background:var(--li)}
+.bcard .plug{position:absolute;inset:auto 0 0;background:var(--li);color:#0a1300;font-size:10px;font-weight:700;letter-spacing:.2em;text-align:center;padding:6px;transform:translateY(100%);transition:transform .16s}
+.bcard:hover .plug,.bcard.sel .plug{transform:translateY(0)}
+.bcard.sel .plug{background:var(--cy);color:#00212b}
+
+/* ---------- terminal ---------- */
+.term{border:1px solid var(--line);background:linear-gradient(180deg,#0a0e1c,#06080f);box-shadow:0 0 60px rgba(0,0,0,.6)}
+.tbar{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);background:#080c18;flex-wrap:wrap}
+.tbar .pill{font-size:10.5px;letter-spacing:.16em;border:1px solid var(--line);padding:3px 9px;color:var(--dim)}
+.tbar .pill b{color:var(--tx);font-weight:500}
+.tbar .sp{flex:1}
+.tgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:0}
+.chartwrap{position:relative;border-right:1px solid var(--line);min-width:0}
+#chart{display:block;width:100%;height:340px;background:
+  linear-gradient(rgba(27,37,64,.5) 1px,transparent 1px) 0 0/100% 34px,
+  linear-gradient(90deg,rgba(27,37,64,.35) 1px,transparent 1px) 0 0/54px 100%,
+  #05070f}
+.price{position:absolute;top:10px;left:12px;font-size:12px;letter-spacing:.12em;color:var(--dim)}
+.price b{font-size:22px;color:#fff;display:block;font-weight:500;font-family:var(--disp)}
+.price u{text-decoration:none}
+.up{color:var(--li)} .down{color:var(--rd)}
+.side{display:flex;flex-direction:column;min-width:0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);border-bottom:1px solid var(--line)}
+.stat{padding:9px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.stat i{font-style:normal;font-size:9.5px;letter-spacing:.18em;color:#5d6d95;display:block}
+.stat b{font-family:var(--disp);font-size:19px;font-weight:600;color:#fff;letter-spacing:.02em}
+#log{flex:1;min-height:120px;max-height:186px;overflow:auto;padding:8px 12px;font-size:11.5px;line-height:1.6;color:var(--dim);background:#05070f}
+#log div{border-bottom:1px dotted rgba(27,37,64,.7);padding:3px 0}
+#log b{color:var(--tx);font-weight:500}
+#log .g{color:var(--li)} #log .r{color:var(--rd)} #log .c{color:var(--cy)} #log .m{color:var(--mg)}
+.deck{border-top:1px solid var(--line);background:#080c18;padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.deck .who{display:flex;align-items:center;gap:10px;min-width:0}
+.deck .who img{width:74px;height:auto;mix-blend-mode:screen;filter:saturate(1.2) brightness(1.35);
+  -webkit-mask-image:radial-gradient(ellipse 62% 62% at 50% 50%,#000 58%,transparent 88%);mask-image:radial-gradient(ellipse 62% 62% at 50% 50%,#000 58%,transparent 88%)}
+.deck .who div{min-width:0}
+.deck .who i{font-style:normal;font-size:10px;letter-spacing:.18em;color:#5d6d95;display:block}
+.deck .who b{font-family:var(--disp);font-size:16px;color:#fff;letter-spacing:.08em}
+.sig{min-width:0}
+.sig .ln{font-size:10px;letter-spacing:.18em;color:var(--cy)}
+.sig p{margin:2px 0 0;font-size:13.5px;color:#fff;line-height:1.4}
+.sig p u{text-decoration:none;color:var(--am)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.acts .btn{padding:12px 16px}
+.acts .btn.no{background:var(--rd);color:#2b0000;box-shadow:0 4px 0 #8f2020}
+.hint{padding:12px 16px;color:var(--dim);font-size:12px;border-top:1px solid var(--line);background:#080c18}
+
+/* ---------- install overlay ---------- */
+#inst{position:fixed;inset:0;z-index:150;background:rgba(2,3,7,.93);display:none;align-items:center;justify-content:center;padding:20px}
+#inst .box{width:min(560px,94vw);border:1px solid var(--cy);background:#070b16;padding:22px;box-shadow:0 0 70px rgba(75,227,255,.22)}
+#inst h3{font-family:var(--disp);margin:0 0 4px;font-size:22px;letter-spacing:.08em;color:#fff}
+#inst .pb{height:14px;border:1px solid var(--line);background:#05070f;margin:14px 0 10px;position:relative;overflow:hidden}
+#inst .pb b{position:absolute;inset:0 auto 0 0;width:0;background:repeating-linear-gradient(90deg,var(--cy) 0 8px,#1a6c80 8px 14px)}
+#inst .lines{font-size:11.5px;color:var(--dim);min-height:88px;line-height:1.7}
+#inst .lines span{color:var(--li)}
+
+/* ---------- result ---------- */
+#res{position:fixed;inset:0;z-index:160;background:rgba(2,3,7,.9);display:none;align-items:center;justify-content:center;padding:20px}
+#res .card{width:min(600px,94vw);border:2px solid var(--li);background:linear-gradient(180deg,#0b1224,#06080f);padding:26px;text-align:center;box-shadow:0 0 80px rgba(182,255,58,.22)}
+#res img{width:190px;margin:0 auto;mix-blend-mode:screen;filter:saturate(1.25) brightness(1.4);
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000 54%,transparent 86%);mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000 54%,transparent 86%)}
+#res h3{font-family:var(--disp);font-size:clamp(24px,4vw,38px);margin:8px 0 2px;color:#fff;letter-spacing:.06em}
+#res .pnl{font-family:var(--disp);font-size:44px;font-weight:700;margin:6px 0}
+#res p{color:var(--dim);font-size:13px;margin:8px auto 16px;max-width:46ch}
+#rain{position:fixed;inset:0;pointer-events:none;z-index:170}
+
+/* ---------- notes ---------- */
+.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.note{border:1px solid var(--line);background:linear-gradient(180deg,#0a0e1c,#06080f);padding:14px;min-width:0}
+.note img{width:100%;aspect-ratio:16/10;object-fit:contain;mix-blend-mode:screen;filter:saturate(1.2) brightness(1.3);background:#05070f;border:1px solid var(--line);
+  -webkit-mask-image:radial-gradient(ellipse 64% 64% at 50% 50%,#000 60%,transparent 92%);mask-image:radial-gradient(ellipse 64% 64% at 50% 50%,#000 60%,transparent 92%)}
+.note h4{font-family:var(--disp);font-size:16px;letter-spacing:.08em;margin:12px 0 6px;color:#fff}
+.note p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.6}
+.note .tag{font-size:10px;letter-spacing:.2em;color:var(--mg)}
+
+/* ---------- specs ---------- */
+.specs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.spec{border:1px solid var(--line);padding:14px;background:#080c18;min-width:0}
+.spec i{font-style:normal;font-size:10px;letter-spacing:.2em;color:#5d6d95}
+.spec b{display:block;font-family:var(--disp);font-size:20px;color:var(--cy);margin:3px 0 6px}
+.spec p{margin:0;font-size:12px;color:var(--dim);line-height:1.55}
+
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:#5d6d95;font-size:11.5px;letter-spacing:.14em;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+footer .sp{flex:1}
+
+@media(max-width:1000px){
+  .hero-in{grid-template-columns:1fr;gap:18px}
+  .hcol{display:flex;flex-direction:column}
+  .hcol .kick{order:1}.hcol h1{order:2}.hcol .cta{order:3;margin-bottom:4px}.hcol .steps{order:4}.hcol .sub{order:5}
+  .hero-in>div:last-child{order:-1}
+  .brainbox{max-width:420px}
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .tgrid{grid-template-columns:1fr}
+  .chartwrap{border-right:none;border-bottom:1px solid var(--line)}
+  .notes{grid-template-columns:1fr}
+  .specs{grid-template-columns:repeat(2,1fr)}
+  .deck{grid-template-columns:1fr;gap:10px}
+  .acts{justify-content:stretch}
+  .acts .btn{flex:1;text-align:center}
+}
+@media(max-width:560px){
+  .hb{gap:8px;padding:7px 0}
+  .logo{font-size:16px}
+  .btn{padding:8px 12px;font-size:11px}
+  .snd button{padding:6px 7px;font-size:10px}
+  .tickchip{font-size:10px;padding:2px 6px}
+  .brainbox{max-height:34vh}
+  .brainbox img{max-height:34vh}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr}
+  .specs{grid-template-columns:1fr}
+  #chart{height:260px}
+  .brainbox{max-width:300px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="grain"></div><div class="scan"></div>
+
+<div id="gate">
+  <img class="gb" src="brain.webp" alt="a brain waiting for a bug to move in">
+  <h2>BUG BRAIN</h2>
+  <p>PICK AN INSECT BRAIN · IT TRADES FOR YOU</p>
+  <div class="en">CLICK TO ENTER</div>
+</div>
+
+<header>
+  <div class="wrap hb">
+    <div class="logo"><i></i>BUG BRAIN</div>
+    <div class="tickchip">$BBRAIN</div>
+    <div class="sp"></div>
+    <div class="snd">
+      <button id="sfxBtn" class="on">SOUND: ON</button>
+      <button id="musBtn">MUSIC: OFF</button>
+    </div>
+    <a class="btn ghost xLink" id="xBtn" href="#" target="_blank" rel="noopener">X</a>
+    <a class="btn soon" id="buyBtn" href="#">BUY $BBRAIN</a>
+  </div>
+</header>
+
+<div class="mq"><div id="mqin"></div></div>
+
+<div class="wrap hero">
+  <div class="hero-in">
+    <div class="hcol">
+      <div class="kick">20 INSECT BRAINS · ONE LIVE TERMINAL · ZERO SUPERVISION</div>
+      <h1>PICK AN INSECT BRAIN.<br><em>IT TRADES FOR YOU.</em></h1>
+      <div class="steps">
+        <div class="step"><i>01</i><b>PICK A BRAIN</b><span>Twenty of them are awake down there. Each trades like the bug it came out of.</span></div>
+        <div class="step"><i>02</i><b>IT PLUGS IN</b><span>A minute of wiring and the little thing is sitting at a live terminal.</span></div>
+        <div class="step"><i>03</i><b>IT STARTS TRADING</b><span>It opens positions and tells you why. You decide whether to let it cook.</span></div>
+      </div>
+      <div class="cta">
+        <a class="btn big" href="#lab" id="pickBtn">▸ PICK A BRAIN</a>
+        <a class="btn ghost" href="#terminal">SEE THE TERMINAL</a>
+        <div class="cabox" id="caBox">CA <b class="ca-val">deploying · brains still curing</b></div>
+      </div>
+      <p class="sub">we took the brains out of twenty insects and taught every one of them to read a chart. the fly brain refreshes the page four hundred times a minute, the ant brain will not close a position until the whole colony agrees, and the moth brain buys whatever is glowing the brightest.</p>
+      <p class="sub">none of them will explain themselves twice. pick one, plug it in, and watch what a nervous system the size of a poppy seed does with your entire account.</p>
+    </div>
+    <div class="brainwrap">
+      <div class="brainbox" id="brainBox">
+        <img src="brain.webp" alt="the donor brain, still warm, currently hosting nobody">
+        <canvas id="neu"></canvas>
+        <div id="drop"></div>
+        <div class="poke">poke the brain · it pays</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="lab">
+  <div class="wrap">
+    <div class="shead">
+      <h2>THE BRAIN SHELF</h2>
+      <span id="shelfCount">20 BRAINS · ALL LIVE</span>
+      <div class="sp"></div>
+      <span>CLICK ONE TO PLUG IT IN</span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section id="terminal">
+  <div class="wrap">
+    <div class="shead">
+      <h2>THE TERMINAL</h2>
+      <span id="tstate">NO BRAIN CONNECTED</span>
+      <div class="sp"></div>
+      <span>8 SIGNALS PER SESSION</span>
+    </div>
+    <div class="term">
+      <div class="tbar">
+        <div class="pill">PAIR <b>BBRAIN/USD</b></div>
+        <div class="pill">FEED <b id="feedState">LIVE</b></div>
+        <div class="pill">OPERATOR <b id="opName">—</b></div>
+        <div class="sp"></div>
+        <button class="btn ghost" id="swapBtn">SWAP BRAIN</button>
+      </div>
+      <div class="tgrid">
+        <div class="chartwrap">
+          <canvas id="chart"></canvas>
+          <div class="price">BBRAIN/USD <b id="pxVal">0.0000</b><u id="pxDelta">+0.00%</u></div>
+        </div>
+        <div class="side">
+          <div class="stats">
+            <div class="stat"><i>SIGNALS</i><b id="sSig">0 / 8</b></div>
+            <div class="stat"><i>SESSION PNL</i><b id="sPnl">+0.00%</b></div>
+            <div class="stat"><i>POSITION</i><b id="sPos">FLAT</b></div>
+            <div class="stat"><i>BRAIN TEMP</i><b id="sTmp">CALM</b></div>
+          </div>
+          <div id="log"></div>
+        </div>
+      </div>
+      <div class="deck" id="deck">
+        <div class="who">
+          <img id="deckImg" src="b-fly.webp" alt="the brain currently at the desk">
+          <div><i>AT THE DESK</i><b id="deckName">NOBODY</b></div>
+        </div>
+        <div class="sig">
+          <div class="ln" id="sigLn">STANDING BY</div>
+          <p id="sigTx">Pick a brain from the shelf above and it will sit down here and start calling trades.</p>
+        </div>
+        <div class="acts">
+          <button class="btn cy" id="yesBtn">LET IT COOK</button>
+          <button class="btn no" id="noBtn">SWAT IT</button>
+        </div>
+      </div>
+      <div class="hint" id="hint">The brain proposes, you approve. Approve it and the trade goes live on the chart for a few candles. Swat it and the brain gets warmer, louder and a great deal less careful.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="shead"><h2>FIELD NOTES</h2><span>FROM THE SHELF</span></div>
+    <div class="notes">
+      <div class="note">
+        <img src="b-moth.webp" alt="moth brain, permanently pointed at the brightest green candle on the board">
+        <h4>THE MOTH DOES NOT DIVERSIFY</h4>
+        <p class="tag">SHELF · SLOT 17</p>
+        <p>It found one glowing thing on the board and it has been walking into it since Tuesday. Every time we move the terminal it finds the light again within nine seconds. Best win rate on the shelf, worst reasoning ever recorded.</p>
+      </div>
+      <div class="note">
+        <img src="b-ant.webp" alt="ant brain, waiting for a colony that is not coming">
+        <h4>THE ANT WANTS A COMMITTEE</h4>
+        <p class="tag">SHELF · SLOT 11</p>
+        <p>It will not open a position until eleven other ants confirm the entry, and there are no other ants, so it mostly sits there emitting a very faint chemical complaint. When it finally does trade it never closes early. Not once.</p>
+      </div>
+      <div class="note">
+        <img src="b-mosquito.webp" alt="mosquito brain, smelling a wallet somewhere in the building">
+        <h4>THE MOSQUITO SMELLS YOUR WALLET</h4>
+        <p class="tag">SHELF · SLOT 06</p>
+        <p>It does not read charts. It reads whoever is holding the most and moves in that direction, which is either genius or a crime depending on the week. Keep the sound on for this one, you will hear it coming.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="shead"><h2>THE SPEC SHEET</h2><span>WHAT IS IN THE JAR</span></div>
+    <div class="specs">
+      <div class="spec"><i>SUPPLY</i><b>1,000,000,000</b><p>One billion, counted once by the ant brain and never recounted because it took six days and it refused to be interrupted.</p></div>
+      <div class="spec"><i>LIQUIDITY</i><b>BURNED</b><p>The firefly brain was holding the lighter and nobody told it to stop. There is nothing left to pull and nowhere to pull it to.</p></div>
+      <div class="spec"><i>TAX</i><b>0 / 0</b><p>Nothing on the way in, nothing on the way out. The twenty of them agreed on this instantly, which has never happened before.</p></div>
+      <div class="spec"><i>OWNERSHIP</i><b>RENOUNCED</b><p>Signed over to the shelf. Technically the scorpion brain holds the keys, and it has been asleep in a dark corner since launch.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap hb" style="padding:0">
+    <div class="logo"><i></i>BUG BRAIN · $BBRAIN</div>
+    <div class="sp"></div>
+    <span>20 BRAINS · ALL LIVE · ALL TRADING</span>
+    <a class="btn ghost xLink" href="#" target="_blank" rel="noopener">X</a>
+  </div>
+</footer>
+
+<div id="inst"><div class="box">
+  <h3 id="instName">PLUGGING IN</h3>
+  <div style="font-size:11px;letter-spacing:.18em;color:var(--dim)" id="instSub">SYNAPSE HANDSHAKE</div>
+  <div class="pb"><b id="instBar"></b></div>
+  <div class="lines" id="instLines"></div>
+</div></div>
+
+<div id="res"><div class="card">
+  <img id="resImg" src="b-fly.webp" alt="the brain that just finished its session">
+  <h3 id="resTitle">SESSION CLOSED</h3>
+  <div class="pnl" id="resPnl">+0.00%</div>
+  <p id="resTx"></p>
+  <div class="cta" style="justify-content:center">
+    <button class="btn" id="againBtn">PICK ANOTHER BRAIN</button>
+    <button class="btn ghost" id="closeRes">CLOSE</button>
+  </div>
+</div></div>
+<div id="rain"></div>
+
+<script>
+/* ============ SETTINGS ============ */
+window.CONTRACT = "";      /* адрес контракта */
+window.TWITTER  = "";      /* ссылка на X */
+window.BUY_URL  = "";      /* ссылка на покупку */
+/* ================================== */
+
+var CA=(window.CONTRACT||"").trim(), TW=(window.TWITTER||"").trim(), BUY=(window.BUY_URL||"").trim();
+if(CA){
+  document.querySelectorAll(".ca-val").forEach(function(e){ e.textContent=CA.slice(0,6)+"…"+CA.slice(-4); });
+  document.getElementById("caBox").addEventListener("click",function(){
+    var b=this.querySelector("b"), old=b.textContent;
+    navigator.clipboard.writeText(CA).then(function(){ b.textContent="copied"; setTimeout(function(){ b.textContent=old; },1200); });
+  });
+}
+if(TW){ document.querySelectorAll("#xBtn,.xLink").forEach(function(a){ a.href=TW; }); }
+var buy=document.getElementById("buyBtn");
+if(buy){
+  if(BUY){ buy.href=BUY; buy.target="_blank"; buy.rel="noopener"; buy.classList.remove("soon"); }
+  else{ buy.addEventListener("click",function(e){ e.preventDefault(); }); }
+}
+
+/* ---------------- audio ---------------- */
+var AC=null, sfxOn=true, vol=1;
+function ac(){ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); return AC; }catch(e){ return null; } }
+function tone(f1,f2,dur,type,g){
+  if(!sfxOn) return; var c=ac(); if(!c) return;
+  var o=c.createOscillator(), gg=c.createGain(), t=c.currentTime;
+  o.type=type||"sine"; o.frequency.setValueAtTime(f1,t);
+  if(f2&&f2!==f1) o.frequency.exponentialRampToValueAtTime(Math.max(f2,1),t+dur);
+  gg.gain.setValueAtTime(.0001,t); gg.gain.exponentialRampToValueAtTime((g||.06)*vol,t+.012);
+  gg.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(gg); gg.connect(c.destination); o.start(t); o.stop(t+dur+.05);
+}
+function buzz(dur,f,g){
+  if(!sfxOn) return; var c=ac(); if(!c) return;
+  var o=c.createOscillator(), o2=c.createOscillator(), gg=c.createGain(), t=c.currentTime;
+  o.type="sawtooth"; o2.type="sawtooth"; o.frequency.value=f; o2.frequency.value=f*1.014;
+  gg.gain.setValueAtTime(.0001,t); gg.gain.exponentialRampToValueAtTime((g||.05)*vol,t+.02);
+  gg.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(gg); o2.connect(gg); gg.connect(c.destination);
+  o.start(t); o2.start(t); o.stop(t+dur+.05); o2.stop(t+dur+.05);
+}
+function noise(dur,g){
+  if(!sfxOn) return; var c=ac(); if(!c) return;
+  var n=c.sampleRate*dur, b=c.createBuffer(1,n,c.sampleRate), d=b.getChannelData(0);
+  for(var i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+  var s=c.createBufferSource(), gg=c.createGain(), f=c.createBiquadFilter();
+  f.type="highpass"; f.frequency.value=2400;
+  s.buffer=b; gg.gain.value=(g||.05)*vol; s.connect(f); f.connect(gg); gg.connect(c.destination); s.start();
+}
+var sfxBtn=document.getElementById("sfxBtn");
+sfxBtn.onclick=function(){ sfxOn=!sfxOn; this.textContent="SOUND: "+(sfxOn?"ON":"OFF"); this.classList.toggle("on",sfxOn); if(sfxOn) tone(700,1200,.1,"square",.05); };
+
+/* swarm-techno loop: detuned saw buzz + click hats */
+var MU={on:false,t:null,step:0,next:0};
+var STEP=.135;
+var BAS=[55,55,73.42,55,49,55,65.41,55];
+var LED=[440,0,523.25,0,587.33,493.88,0,392];
+function mnote(f,at,dur,type,g,filt){
+  var c=ac(); if(!c||!f) return;
+  var o=c.createOscillator(), gg=c.createGain(), bf=c.createBiquadFilter();
+  o.type=type; o.frequency.setValueAtTime(f,at);
+  bf.type="lowpass"; bf.frequency.setValueAtTime(filt||1800,at);
+  gg.gain.setValueAtTime(.0001,at); gg.gain.exponentialRampToValueAtTime(g,at+.015);
+  gg.gain.exponentialRampToValueAtTime(.0001,at+dur);
+  o.connect(bf); bf.connect(gg); gg.connect(c.destination); o.start(at); o.stop(at+dur+.03);
+}
+function mhat(at,g){
+  var c=ac(); if(!c) return;
+  var n=Math.floor(c.sampleRate*.03), b=c.createBuffer(1,n,c.sampleRate), d=b.getChannelData(0);
+  for(var i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+  var s=c.createBufferSource(), gg=c.createGain(), f=c.createBiquadFilter();
+  f.type="highpass"; f.frequency.value=6500; s.buffer=b; gg.gain.value=g;
+  s.connect(f); f.connect(gg); gg.connect(c.destination); s.start(at);
+}
+function musSchedule(){
+  var c=ac(); if(!c) return;
+  while(MU.next < c.currentTime+.5){
+    var i=MU.step%8, at=Math.max(MU.next,c.currentTime+.02);
+    mnote(BAS[i],at,.13,"sawtooth",.055,420+((MU.step%32)*26));
+    if(LED[i]) mnote(LED[i],at,.11,"square",.018,2600);
+    if(i%2===1) mhat(at,.022);
+    if(i===0) mnote(BAS[i]/2,at,.2,"sine",.05,200);
+    MU.next+=STEP; MU.step++;
+  }
+}
+var musBtn=document.getElementById("musBtn");
+musBtn.onclick=function(){
+  MU.on=!MU.on; this.textContent="MUSIC: "+(MU.on?"ON":"OFF"); this.classList.toggle("on",MU.on);
+  if(MU.on){ var c=ac(); if(!c) return; MU.next=c.currentTime+.1; MU.t=setInterval(musSchedule,90); }
+  else if(MU.t){ clearInterval(MU.t); MU.t=null; }
+};
+document.addEventListener("visibilitychange",function(){
+  if(document.hidden&&MU.on&&MU.t){ clearInterval(MU.t); MU.t=null; }
+  else if(!document.hidden&&MU.on&&!MU.t){ var c=ac(); if(c){ MU.next=c.currentTime+.1; MU.t=setInterval(musSchedule,90); } }
+});
+
+/* ---------------- gate ---------------- */
+var gate=document.getElementById("gate"), opened=false;
+function openGate(){
+  if(opened) return; opened=true;
+  gate.style.transition="opacity .5s"; gate.style.opacity="0";
+  setTimeout(function(){ gate.style.display="none"; },520);
+  tone(220,880,.28,"square",.05); setTimeout(function(){ buzz(.5,110,.04); },120);
+}
+gate.addEventListener("click",openGate);
+setTimeout(openGate,25000);
+
+/* ---------------- marquee ---------------- */
+var MQ=["brain shelf fully stocked","fly brain has refreshed the chart 19,441 times today","ant brain still waiting on the colony","moth brain long the brightest candle","scorpion brain asleep, positions open","mosquito brain can smell your wallet from the lobby","cricket brain only trades after dark","firefly brain burned the liquidity, on purpose","termite brain is eating the support level","mantis brain holds everything very still and then does not"];
+(function(){
+  var s=MQ.map(function(x){ return "<b>◆</b> "+x+" "; }).join("");
+  document.getElementById("mqin").innerHTML=s+s;
+})();
+
+/* ---------------- brains ---------------- */
+var BRAINS=[
+ {id:"fly",n:"FLY",sp:96,rk:82,fc:14,bias:.10,line:"Sees the chart at four hundred frames a second and understands none of them. Enters, exits, enters again before your eyes have refreshed once.",
+  r:["something moved on the left side of the screen, going long","exited by accident, re-entering immediately","this candle smelled edible","saw eleven versions of this trade at once, taking all of them"]},
+ {id:"bee",n:"BEE",sp:62,rk:38,fc:88,bias:.22,line:"Works a strict route and files a report on every flower it touches. It will not deviate from the plan even when the plan is clearly on fire.",
+  r:["this level was profitable last visit, returning as scheduled","the hive voted, we are adding here","pollen count on this candle is unusually high","dancing the entry to the others, hold on"]},
+ {id:"butterfly",n:"BUTTERFLY",sp:34,rk:56,fc:22,bias:.14,line:"Used to be a caterpillar that lost everything, came back gorgeous and completely unbothered. Trades entirely on how the chart makes it feel today.",
+  r:["the shape of this pullback is beautiful, going long","i have been through worse than this drawdown","flapping here, something big happens somewhere later","the colors agree with me"]},
+ {id:"mantis",n:"MANTIS",sp:20,rk:70,fc:96,bias:.18,line:"Holds absolutely still for six hours and then takes the entire position in one motion. There is no warning and there is no partial fill.",
+  r:["waited long enough, taking it now","the candle came within reach, that was its mistake","striking, do not talk to me","one entry is all this setup deserves"]},
+ {id:"ladybug",n:"LADYBUG",sp:48,rk:24,fc:64,bias:.30,line:"Genuinely lucky and genuinely unaware of it. Every entry it takes looks wrong on the chart and somehow settles green anyway.",
+  r:["feeling fortunate about this one","counted the spots, seven means long","landed on someone, they said it was good luck","this is the lucky candle, i can tell"]},
+ {id:"mosquito",n:"MOSQUITO",sp:84,rk:90,fc:40,bias:.08,line:"Does not read charts at all. It reads whoever is holding the most and quietly moves in behind them at three in the morning.",
+  r:["following the big wallet, do not ask how i found it","this one is warm, going in","found a vein of liquidity, drinking","nobody noticed the entry, that is the point"]},
+ {id:"dragonfly",n:"DRAGONFLY",sp:90,rk:44,fc:92,bias:.34,line:"Ninety-five percent hit rate in the wild and it knows the number. It only takes trades it has already finished calculating three seconds ago.",
+  r:["intercept computed, this fill is already mine","i do not miss, taking the entry","tracked it across four candles, closing the gap","the exit is priced before the entry"]},
+ {id:"beetle",n:"BEETLE",sp:30,rk:18,fc:72,bias:.24,line:"Armour-plated and profoundly boring, which is exactly why it is still here. Sizes down, holds through everything, complains about nothing.",
+  r:["adding a small one, i can carry the drawdown","this shell has survived worse candles","slow entry, slow exit, that is the whole system","hedged under a rock, nobody can see me"]},
+ {id:"spider",n:"SPIDER",sp:40,rk:66,fc:86,bias:.20,line:"Never chases anything. It builds a level, sits in the middle of it, and waits for price to walk directly into the thing it already made.",
+  r:["the web is set at this level, waiting","something touched the line, moving in","wrapped this position for later","i did not chase it, it came to me"]},
+ {id:"scorpion",n:"SCORPION",sp:26,rk:94,fc:58,bias:.06,line:"Survives on nothing for a year and then does something unforgivable in a single tick. Glows faintly under the terminal lights, which is unsettling.",
+  r:["been flat for months, now leveraged","this position has a tail on it","went in under the rock, going in hard","one bad move from either of us ends this"]},
+ {id:"ant",n:"ANT",sp:44,rk:20,fc:98,bias:.26,line:"Refuses to open anything until eleven other ants confirm the entry, and there are no other ants. Once it is finally in, it never closes early.",
+  r:["waiting on colony confirmation, still waiting","carrying a position forty times my own size","the trail says this way, the trail is never wrong","committed, i do not know how to quit"]},
+ {id:"grasshopper",n:"GRASSHOPPER",sp:76,rk:74,fc:30,bias:.12,line:"Covers enormous distance in one leap and has no idea where it will land. Every trade is an all-or-nothing jump into the next green field.",
+  r:["jumping, will find out where in a second","cleared the whole range in one move","this field is finished, moving to the next","legs are loaded, going long"]},
+ {id:"caterpillar",n:"CATERPILLAR",sp:16,rk:28,fc:76,bias:.28,line:"Accumulates constantly and never sells anything. It says it is building toward something and, annoyingly, it usually is.",
+  r:["eating this level, all of it","buying, buying, still buying","i become something else if i hold long enough","slow is fine, i have the whole leaf"]},
+ {id:"stagbeetle",n:"STAG BEETLE",sp:36,rk:80,fc:52,bias:.16,line:"Shows up to every candle looking for a fight and picks the biggest one on the board. Wins about half of them, loudly, in front of everyone.",
+  r:["locking horns with this resistance","the bigger the candle the better the fight","throwing this level off the branch","i am not flipping over, you are"]},
+ {id:"firefly",n:"FIREFLY",sp:58,rk:48,fc:44,bias:.32,line:"Signals its entries in advance by glowing, which is a terrible idea and a beautiful one. Everyone front-runs it and it does not mind at all.",
+  r:["lighting up, everyone can see the entry","signalling long, join if you want","blinked twice, that means size","the dark part of the chart is where i work"]},
+ {id:"wasp",n:"WASP",sp:80,rk:88,fc:60,bias:.10,line:"Aggressive without provocation and fully capable of doing it again. It does not scale out, it does not apologise, it just re-enters.",
+  r:["hitting this level again, and again","no reason, i am simply going short","came back for a second entry","the position is angry now"]},
+ {id:"moth",n:"MOTH",sp:66,rk:86,fc:8,bias:.36,line:"Found one glowing thing on the board and has been walking into it since Tuesday. Best win rate on the shelf, worst reasoning ever recorded.",
+  r:["this candle is the brightest one, going in","the light says buy","i cannot look away from this green","circling the top, entering"]},
+ {id:"termite",n:"TERMITE",sp:38,rk:62,fc:82,bias:.22,line:"Eats the support level from the inside for weeks and nobody notices until the floor is gone. Patient in the way that ruins people.",
+  r:["chewing through this support quietly","the structure is hollow now, shorting","one grain at a time, then all of it","nothing looks wrong from the outside yet"]},
+ {id:"cricket",n:"CRICKET",sp:54,rk:34,fc:68,bias:.20,line:"Only trades after dark and narrates everything it does at volume. When it goes quiet, close the terminal and go outside.",
+  r:["night session open, chirping the entry","counted the ticks, temperature says long","loud about this one, everyone hears it","silence means i closed already"]},
+ {id:"stickbug",n:"STICK BUG",sp:12,rk:40,fc:94,bias:.24,line:"Impossible to find on the chart and it prefers things that way. It has been in the same position since March and refuses to say which one.",
+  r:["you cannot see the position, that is the edge","holding since march, no updates","pretending to be part of the trendline","moving one pixel per candle, on purpose"]}
+];
+var GEN=["the volume looks funny here","nobody else is taking this, so i am","the last one worked, doing it again","this level owes me","reading the book, it says go","gut says size up"];
+
+var grid=document.getElementById("grid");
+BRAINS.forEach(function(b,i){
+  var el=document.createElement("button");
+  el.className="bcard"; el.type="button"; el.dataset.id=b.id;
+  el.innerHTML=
+    '<div class="top"><span class="nm">'+b.n+'</span><span class="lv"><i></i>LIVE</span></div>'+
+    '<img src="b-'+b.id+'.webp" alt="'+b.n.toLowerCase()+' brain, slot '+(i+1<10?"0":"")+(i+1)+', currently awake">'+
+    '<p>'+b.line+'</p>'+
+    '<div class="bars">'+
+      '<div class="bar"><u>SPD</u><span><b style="width:'+b.sp+'%"></b></span></div>'+
+      '<div class="bar r"><u>RISK</u><span><b style="width:'+b.rk+'%"></b></span></div>'+
+      '<div class="bar f"><u>FOCUS</u><span><b style="width:'+b.fc+'%"></b></span></div>'+
+    '</div>'+
+    '<div class="plug">PLUG IT IN ▸</div>';
+  el.addEventListener("click",function(){ plugIn(b.id); });
+  el.addEventListener("mouseenter",function(){ tone(900+i*13,1300,.05,"square",.02); });
+  grid.appendChild(el);
+});
+
+/* ---------------- chart ---------------- */
+var cv=document.getElementById("chart"), cx=cv.getContext("2d");
+var candles=[], price=0.0412, tick=0, lastPx=price, dpr=Math.min(devicePixelRatio||1,2);
+function fitCv(){
+  var r=cv.getBoundingClientRect();
+  cv.width=Math.max(320,r.width*dpr); cv.height=Math.max(200,r.height*dpr);
+}
+addEventListener("resize",fitCv); fitCv();
+for(var i=0;i<46;i++){ candles.push(mkCandle(price)); price=candles[candles.length-1].c; }
+function mkCandle(p){
+  var o=p, c=p*(1+(Math.random()-.5)*.03);
+  return {o:o,c:c,h:Math.max(o,c)*(1+Math.random()*.012),l:Math.min(o,c)*(1-Math.random()*.012)};
+}
+var drift=0;
+function stepPrice(){
+  var last=candles[candles.length-1];
+  var mv=(Math.random()-.5)*.006 + drift;
+  last.c=Math.max(.0005,last.c*(1+mv));
+  last.h=Math.max(last.h,last.c); last.l=Math.min(last.l,last.c);
+  tick++;
+  if(tick%13===0){
+    candles.push({o:last.c,c:last.c,h:last.c,l:last.c});
+    if(candles.length>58) candles.shift();
+    if(POS) POS.candles++;
+    if(POS && POS.candles>=POS.life) resolvePos();
+  }
+  drift*=.93;
+  var p0=candles[Math.max(0,candles.length-30)].o, pc=candles[candles.length-1].c;
+  var d=(pc-p0)/p0*100;
+  document.getElementById("pxVal").textContent=pc.toFixed(4);
+  var pd=document.getElementById("pxDelta");
+  pd.textContent=(d>=0?"+":"")+d.toFixed(2)+"%"; pd.className=d>=0?"up":"down";
+}
+function draw(){
+  var W=cv.width, H=cv.height, n=candles.length, pad=14*dpr;
+  cx.clearRect(0,0,W,H);
+  var hi=-1e9, lo=1e9;
+  candles.forEach(function(c){ hi=Math.max(hi,c.h); lo=Math.min(lo,c.l); });
+  var rng=(hi-lo)||1; hi+=rng*.12; lo-=rng*.12; rng=hi-lo;
+  var cw=(W-pad*2)/n, bw=Math.max(2,cw*.62);
+  function Y(v){ return pad+(hi-v)/rng*(H-pad*2); }
+  if(POS){
+    cx.strokeStyle=POS.dir>0?"rgba(182,255,58,.55)":"rgba(255,93,93,.55)";
+    cx.setLineDash([6*dpr,6*dpr]); cx.lineWidth=1.4*dpr;
+    cx.beginPath(); cx.moveTo(0,Y(POS.entry)); cx.lineTo(W,Y(POS.entry)); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle=POS.dir>0?"rgba(182,255,58,.08)":"rgba(255,93,93,.08)";
+    cx.fillRect(0,0,W,H);
+  }
+  candles.forEach(function(c,i){
+    var x=pad+i*cw+cw/2, up=c.c>=c.o;
+    cx.strokeStyle=up?"#b6ff3a":"#ff5d5d"; cx.fillStyle=up?"rgba(182,255,58,.85)":"rgba(255,93,93,.85)";
+    cx.lineWidth=1.2*dpr;
+    cx.beginPath(); cx.moveTo(x,Y(c.h)); cx.lineTo(x,Y(c.l)); cx.stroke();
+    var y1=Y(Math.max(c.o,c.c)), y2=Y(Math.min(c.o,c.c));
+    cx.fillRect(x-bw/2,y1,bw,Math.max(1.5*dpr,y2-y1));
+  });
+  var lp=candles[candles.length-1].c;
+  cx.strokeStyle="rgba(75,227,255,.5)"; cx.setLineDash([3*dpr,5*dpr]); cx.lineWidth=1*dpr;
+  cx.beginPath(); cx.moveTo(0,Y(lp)); cx.lineTo(W,Y(lp)); cx.stroke(); cx.setLineDash([]);
+  requestAnimationFrame(draw);
+}
+draw();
+setInterval(stepPrice,150);
+
+/* ---------------- session ---------------- */
+var CUR=null, POS=null, sig=0, pnl=0, temp=0, waiting=false, SESS=0;
+var logEl=document.getElementById("log");
+function log(txt,cls){
+  var d=document.createElement("div");
+  d.innerHTML=(cls?'<span class="'+cls+'">':"<span>")+txt+"</span>";
+  logEl.appendChild(d); logEl.scrollTop=logEl.scrollHeight;
+  while(logEl.children.length>70) logEl.removeChild(logEl.firstChild);
+}
+function setStat(){
+  document.getElementById("sSig").textContent=sig+" / 8";
+  var p=document.getElementById("sPnl");
+  p.textContent=(pnl>=0?"+":"")+pnl.toFixed(2)+"%"; p.style.color=pnl>=0?"var(--li)":"var(--rd)";
+  document.getElementById("sPos").textContent=POS?(POS.dir>0?"LONG "+POS.lev+"x":"SHORT "+POS.lev+"x"):"FLAT";
+  document.getElementById("sTmp").textContent=temp<2?"CALM":temp<4?"WARM":temp<6?"HOT":"UNWELL";
+  document.getElementById("sTmp").style.color=temp<2?"#fff":temp<4?"var(--am)":"var(--rd)";
+}
+function plugIn(id){
+  var b=null; BRAINS.forEach(function(x){ if(x.id===id) b=x; });
+  if(!b) return;
+  document.querySelectorAll(".bcard").forEach(function(e){ e.classList.toggle("sel",e.dataset.id===id); });
+  var box=document.getElementById("inst");
+  box.style.display="flex";
+  document.getElementById("instName").textContent="PLUGGING IN THE "+b.n+" BRAIN";
+  document.getElementById("instSub").textContent="SLOT "+(BRAINS.indexOf(b)+1)+" · SYNAPSE HANDSHAKE";
+  var bar=document.getElementById("instBar"), lines=document.getElementById("instLines");
+  lines.innerHTML=""; bar.style.width="0%";
+  var steps=["opening the jar","counting neurons · "+(120+Math.floor(Math.random()*900)),"wiring optic lobe to the price feed","teaching it what a candle is","it has opinions now","handing it the account"];
+  var k=0;
+  buzz(.35,70,.05);
+  var iv=setInterval(function(){
+    bar.style.width=Math.min(100,(k+1)/steps.length*100)+"%";
+    if(k<steps.length){ lines.innerHTML+="<div>› "+steps[k]+" <span>ok</span></div>"; tone(600+k*120,900+k*120,.06,"square",.03); }
+    k++;
+    if(k>steps.length){
+      clearInterval(iv); box.style.display="none";
+      startSession(b);
+    }
+  },330);
+}
+function startSession(b){
+  CUR=b; sig=0; pnl=0; temp=0; POS=null; waiting=false; PEND=null; SESS++;
+  var my=SESS;
+  logEl.innerHTML="";
+  document.getElementById("opName").textContent=b.n;
+  document.getElementById("deckName").textContent=b.n+" BRAIN";
+  document.getElementById("deckImg").src="b-"+b.id+".webp";
+  document.getElementById("tstate").textContent=b.n+" BRAIN CONNECTED";
+  document.getElementById("hint").textContent="The "+b.n.toLowerCase()+" brain is at the desk. It proposes, you approve. Eight signals and the session closes.";
+  setStat();
+  log('<b>'+b.n+' brain</b> sat down at the terminal.',"c");
+  log("it looked at the chart for the first time and did not blink.","");
+  tone(300,900,.25,"square",.05);
+  document.getElementById("sigLn").textContent="WARMING UP";
+  document.getElementById("sigTx").textContent="it is reading the last forty candles. give it a second.";
+  document.getElementById("terminal").scrollIntoView({behavior:"smooth",block:"start"});
+  setTimeout(function(){ if(my===SESS) nextSignal(); },1600);
+}
+function nextSignal(){
+  if(!CUR) return;
+  if(sig>=8){ endSession(); return; }
+  var pool=CUR.r.concat(GEN);
+  var reason=pool[Math.floor(Math.random()*pool.length)];
+  var dir=Math.random()< (.5+CUR.bias*.4) ? 1 : -1;
+  var lev=1+Math.floor(Math.random()*(1+CUR.rk/26));
+  waiting=true;
+  PEND={dir:dir,lev:lev,reason:reason};
+  document.getElementById("sigLn").textContent="SIGNAL "+(sig+1)+" / 8 · "+(dir>0?"LONG":"SHORT")+" "+lev+"x";
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> "'+reason+'" — '+(dir>0?"long":"short")+" "+lev+"x on bbrain/usd.";
+  buzz(.12,dir>0?260:190,.045);
+  log("<b>signal "+(sig+1)+"</b> · "+(dir>0?"long":"short")+" "+lev+"x — "+reason,"m");
+}
+var PEND=null;
+document.getElementById("yesBtn").onclick=function(){
+  if(!CUR){ nudge(); return; }
+  if(!waiting||!PEND) return;
+  waiting=false; sig++;
+  POS={dir:PEND.dir,lev:PEND.lev,entry:candles[candles.length-1].c,candles:0,life:3+Math.floor(Math.random()*3)};
+  drift+=PEND.dir*(.0016+CUR.bias*.0022)*(Math.random()<.62?1:-1.15);
+  log("you let it cook. position open at "+POS.entry.toFixed(4)+".","g");
+  tone(420,880,.18,"square",.05); setStat();
+  document.getElementById("sigLn").textContent="POSITION LIVE";
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> in. holding for '+POS.life+' candles. do not touch anything.';
+};
+document.getElementById("noBtn").onclick=function(){
+  if(!CUR){ nudge(); return; }
+  if(!waiting||!PEND) return;
+  waiting=false; sig++; temp++;
+  var hot=["it did not enjoy that.","it is warmer now.","the brain made a noise.","it wrote something down about you.","it is not going to forget this one."];
+  log("you swatted it. "+hot[Math.min(temp-1,hot.length-1)],"r");
+  noise(.12,.06); tone(180,90,.2,"sawtooth",.05);
+  setStat();
+  document.getElementById("sigLn").textContent="SIGNAL DECLINED";
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> fine. the next one is bigger.';
+  var my=SESS;
+  setTimeout(function(){ if(my!==SESS) return; if(sig>=8) endSession(); else nextSignal(); },1600);
+};
+function nudge(){
+  tone(200,140,.16,"sawtooth",.05);
+  document.getElementById("lab").scrollIntoView({behavior:"smooth",block:"start"});
+  var g=document.getElementById("grid");
+  g.animate([{filter:"brightness(1)"},{filter:"brightness(1.5)"},{filter:"brightness(1)"}],{duration:600});
+}
+function resolvePos(){
+  if(!POS||!CUR) return;
+  var px=candles[candles.length-1].c;
+  var chg=(px-POS.entry)/POS.entry*100*POS.dir*POS.lev;
+  chg=Math.max(-38,Math.min(46,chg*2.4));
+  if(temp>=4) chg*=1.35;
+  pnl+=chg;
+  log(chg>=0 ? "closed <b>+"+chg.toFixed(2)+"%</b> at "+px.toFixed(4)+"." : "closed <b>"+chg.toFixed(2)+"%</b> at "+px.toFixed(4)+".", chg>=0?"g":"r");
+  if(chg>=0){ tone(520,1040,.18,"triangle",.06); for(var i=0;i<6;i++) setTimeout(function(){ dropCoin(); },i*70); }
+  else tone(300,120,.3,"sawtooth",.05);
+  POS=null; setStat();
+  document.getElementById("sigLn").textContent="FLAT";
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> '+(chg>=0?"that was supposed to happen.":"that was not supposed to happen.");
+  var my=SESS;
+  setTimeout(function(){ if(my!==SESS) return; if(sig>=8) endSession(); else nextSignal(); },1600);
+}
+function endSession(){
+  if(!CUR) return;
+  var b=CUR, p=pnl;
+  document.getElementById("resImg").src="b-"+b.id+".webp";
+  document.getElementById("resTitle").textContent=b.n+" BRAIN · SESSION CLOSED";
+  var el=document.getElementById("resPnl");
+  el.textContent=(p>=0?"+":"")+p.toFixed(2)+"%"; el.style.color=p>=0?"var(--li)":"var(--rd)";
+  var good=["It is going back on the shelf with the account intact and an expression you would describe as smug. It has already asked for a bigger size next session.",
+            "Eight signals, no hesitation, and it never once explained itself properly. The shelf is quietly furious about the numbers."];
+  var bad=["It closed the session, turned around very slowly, and pointed at the swat button. Nobody is saying it was your fault out loud.",
+           "The account survived, which is more than the brain expected. It would like to try again with fewer interruptions."];
+  document.getElementById("resTx").textContent=(p>=0?good:bad)[Math.floor(Math.random()*2)];
+  document.getElementById("res").style.display="flex";
+  document.getElementById("tstate").textContent="SESSION CLOSED · "+b.n+" BRAIN";
+  if(p>=0){ tone(523,523,.14,"triangle",.06); setTimeout(function(){ tone(659,659,.14,"triangle",.06); },140); setTimeout(function(){ tone(784,784,.3,"triangle",.06); },280); rainCoins(); }
+  else { tone(300,110,.5,"sawtooth",.06); }
+  CUR=null; POS=null; waiting=false;
+}
+document.getElementById("againBtn").onclick=function(){
+  document.getElementById("res").style.display="none";
+  document.getElementById("lab").scrollIntoView({behavior:"smooth",block:"start"});
+};
+document.getElementById("closeRes").onclick=function(){ document.getElementById("res").style.display="none"; };
+document.getElementById("swapBtn").onclick=function(){ document.getElementById("lab").scrollIntoView({behavior:"smooth",block:"start"}); tone(700,1100,.08,"square",.04); };
+document.getElementById("pickBtn").addEventListener("click",function(){ tone(600,1200,.1,"square",.05); });
+
+/* ---------------- coins ---------------- */
+var drop=document.getElementById("drop");
+function dropCoin(x,y){
+  var d=document.createElement("div"); d.className="coin";
+  var W=drop.clientWidth||320, H=drop.clientHeight||320;
+  if(x===undefined){ x=Math.random()*W; y=-20; }
+  d.style.left=(x-13)+"px"; d.style.top=(y-13)+"px"; drop.appendChild(d);
+  var vx=(Math.random()-.5)*7, vy=-4-Math.random()*5, n=0, rot=(Math.random()-.5)*22, px=x-13, py=y-13;
+  (function stp(){
+    n++; vy+=.42; px+=vx; py+=vy;
+    d.style.transform="translate("+(px-(x-13))+"px,"+(py-(y-13))+"px) rotate("+(n*rot)+"deg)";
+    if(n>120||py>H+320){ d.remove(); return; }
+    if(n>100) d.style.opacity=String(1-(n-100)/20);
+    requestAnimationFrame(stp);
+  })();
+}
+var rainEl=document.getElementById("rain");
+function rainCoins(){
+  var k=0, iv=setInterval(function(){
+    for(var i=0;i<4;i++){
+      var d=document.createElement("div"); d.className="coin";
+      var x=Math.random()*innerWidth;
+      d.style.left=x+"px"; d.style.top="-40px"; rainEl.appendChild(d);
+      (function(el){
+        var vy=2+Math.random()*4, y=-40, r=(Math.random()-.5)*20, n=0;
+        (function s(){ n++; vy+=.28; y+=vy; el.style.transform="translateY("+(y+40)+"px) rotate("+(n*r)+"deg)";
+          if(y>innerHeight+80){ el.remove(); return; } requestAnimationFrame(s); })();
+      })(d);
+    }
+    k++; if(k>16) clearInterval(iv);
+  },110);
+}
+/* poke the brain */
+var bb=document.getElementById("brainBox");
+bb.addEventListener("click",function(e){
+  var r=bb.getBoundingClientRect();
+  var x=e.clientX-r.left, y=e.clientY-r.top;
+  for(var i=0;i<7;i++) dropCoin(x+40+(Math.random()-.5)*40,y+40+(Math.random()-.5)*30);
+  tone(680+Math.random()*260,1400,.12,"square",.05); buzz(.16,120,.03);
+  fire(x/r.width,y/r.height);
+});
+
+/* ---------------- neuron canvas ---------------- */
+var nc=document.getElementById("neu"), nx=nc.getContext("2d"), NODES=[], mx=.5, my=.5;
+function fitNeu(){ var r=nc.getBoundingClientRect(); nc.width=Math.max(200,r.width*dpr); nc.height=Math.max(120,r.height*dpr); }
+addEventListener("resize",fitNeu);
+setTimeout(fitNeu,60); fitNeu();
+for(var q=0;q<26;q++) NODES.push({x:.18+Math.random()*.64,y:.16+Math.random()*.62,p:Math.random()*6.28,s:.6+Math.random()});
+function fire(px,py){
+  NODES.forEach(function(n){
+    var d=Math.hypot(n.x-px,n.y-py);
+    if(d<.34) n.p=0;
+  });
+}
+bb.addEventListener("pointermove",function(e){
+  var r=bb.getBoundingClientRect(); mx=(e.clientX-r.left)/r.width; my=(e.clientY-r.top)/r.height;
+  fire(mx,my);
+});
+function drawNeu(){
+  var W=nc.width,H=nc.height; nx.clearRect(0,0,W,H);
+  NODES.forEach(function(n,i){
+    n.p+=.028*n.s;
+    var a=Math.max(0,1-(n.p%6.28)/2.4);
+    if(a<=0) return;
+    var x=n.x*W, y=n.y*H;
+    nx.beginPath(); nx.arc(x,y,(2.2+a*3.4)*dpr,0,6.28);
+    nx.fillStyle=i%3===0?"rgba(182,255,58,"+a+")":i%3===1?"rgba(75,227,255,"+a+")":"rgba(255,78,205,"+a+")";
+    nx.fill();
+    var m=NODES[(i+5)%NODES.length];
+    nx.strokeStyle="rgba(75,227,255,"+(a*.32)+")"; nx.lineWidth=1*dpr;
+    nx.beginPath(); nx.moveTo(x,y); nx.lineTo(m.x*W,m.y*H); nx.stroke();
+  });
+  requestAnimationFrame(drawNeu);
+}
+drawNeu();
+setStat();
+</script>
+</body>
+</html>
