@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BUG BRAIN — pick an insect brain, it trades for you</title>
-<meta name="description" content="BUG BRAIN ($BBRAIN). Pick one of 20 insect brains. It plugs into the terminal and starts trading. You only decide when to let it cook.">
+<title>BUG BRAIN — 20 AI agents, each running on a real insect brain</title>
+<meta name="description" content="BUG BRAIN ($BBRAIN). Twenty AI trading agents, each one running on a different insect brain. Deploy one and it trades for you — you only decide when to let it cook.">
 <link rel="icon" href="favicon.png">
-<meta property="og:title" content="BUG BRAIN — pick an insect brain, it trades for you">
-<meta property="og:description" content="20 insect brains. One terminal. Pick a brain, it starts trading.">
-<meta property="og:image" content="brain.webp">
+<meta property="og:title" content="BUG BRAIN — 20 AI agents, each running on a real insect brain">
+<meta property="og:description" content="20 AI agents. 20 insect brains. Deploy one and it starts trading.">
+<meta property="og:image" content="fly.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -85,8 +85,8 @@ h1 em{font-style:normal;color:var(--li);text-shadow:0 0 26px rgba(182,255,58,.45
 
 .brainwrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
 .brainbox{position:relative;width:100%;max-width:520px;max-height:60vh;cursor:pointer}
-.brainbox img{width:100%;max-height:60vh;object-fit:contain;mix-blend-mode:screen;animation:float 7s ease-in-out infinite;
-  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 48%,#000 58%,transparent 86%);mask-image:radial-gradient(ellipse 60% 60% at 50% 48%,#000 58%,transparent 86%)}
+.brainbox img{width:100%;max-height:60vh;object-fit:contain;animation:float 7s ease-in-out infinite;
+  filter:drop-shadow(0 0 46px rgba(75,227,255,.4)) drop-shadow(0 0 90px rgba(255,78,205,.22))}
 @keyframes float{50%{transform:translateY(-12px)}}
 #neu{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 #drop{position:absolute;inset:-40px -20px -60px;pointer-events:none;overflow:visible;z-index:5}
@@ -113,7 +113,9 @@ section{padding:44px 0}
 .bcard .lv i{width:6px;height:6px;border-radius:50%;background:var(--li);box-shadow:0 0 8px var(--li);animation:blinkk 1.8s steps(2) infinite}
 .bcard img{width:100%;height:auto;mix-blend-mode:screen;filter:saturate(1.2) brightness(1.3) contrast(1.04);transition:transform .2s}
 .bcard:hover img{transform:scale(1.06)}
-.bcard p{margin:0 10px 8px;font-size:11px;color:var(--dim);line-height:1.42;min-height:46px}
+.bcard .role{margin:7px 10px 0;font-size:9.5px;letter-spacing:.16em;color:var(--cy);border-left:2px solid var(--cy);padding-left:6px}
+.bcard p{margin:6px 10px 6px;font-size:11px;color:var(--dim);line-height:1.42;min-height:46px}
+.bcard .meta{margin:0 10px 7px;font-size:9px;letter-spacing:.08em;color:#4d5b80}
 .bars{margin:0 10px 8px;display:grid;gap:4px}
 .bar{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.1em;color:#5d6d95}
 .bar u{text-decoration:none;width:34px}
@@ -156,7 +158,8 @@ section{padding:44px 0}
   -webkit-mask-image:radial-gradient(ellipse 62% 62% at 50% 50%,#000 58%,transparent 88%);mask-image:radial-gradient(ellipse 62% 62% at 50% 50%,#000 58%,transparent 88%)}
 .deck .who div{min-width:0}
 .deck .who i{font-style:normal;font-size:10px;letter-spacing:.18em;color:#5d6d95;display:block}
-.deck .who b{font-family:var(--disp);font-size:16px;color:#fff;letter-spacing:.08em}
+.deck .who b{font-family:var(--disp);font-size:16px;color:#fff;letter-spacing:.08em;display:block}
+.deck .who em{font-style:normal;font-size:9.5px;letter-spacing:.14em;color:var(--cy)}
 .sig{min-width:0}
 .sig .ln{font-size:10px;letter-spacing:.18em;color:var(--cy)}
 .sig p{margin:2px 0 0;font-size:13.5px;color:#fff;line-height:1.4}
@@ -259,27 +262,27 @@ footer .sp{flex:1}
 <div class="wrap hero">
   <div class="hero-in">
     <div class="hcol">
-      <div class="kick">20 INSECT BRAINS · ONE LIVE TERMINAL · ZERO SUPERVISION</div>
-      <h1>PICK AN INSECT BRAIN.<br><em>IT TRADES FOR YOU.</em></h1>
+      <div class="kick">20 AI AGENTS · 20 INSECT BRAINS · ONE LIVE TERMINAL</div>
+      <h1>PICK AN AI AGENT.<br><em>IT TRADES FOR YOU.</em></h1>
       <div class="steps">
-        <div class="step"><i>01</i><b>PICK A BRAIN</b><span>Twenty of them are awake down there. Each trades like the bug it came out of.</span></div>
-        <div class="step"><i>02</i><b>IT PLUGS IN</b><span>A minute of wiring and the little thing is sitting at a live terminal.</span></div>
+        <div class="step"><i>01</i><b>PICK AN AGENT</b><span>Twenty of them, and every single one runs on the brain of a different insect.</span></div>
+        <div class="step"><i>02</i><b>IT DEPLOYS</b><span>Weights load, the brain wakes up, and the agent connects itself to a live terminal.</span></div>
         <div class="step"><i>03</i><b>IT STARTS TRADING</b><span>It opens positions and tells you why. You decide whether to let it cook.</span></div>
       </div>
       <div class="cta">
-        <a class="btn big" href="#lab" id="pickBtn">▸ PICK A BRAIN</a>
+        <a class="btn big" href="#lab" id="pickBtn">▸ PICK AN AGENT</a>
         <a class="btn ghost" href="#terminal">SEE THE TERMINAL</a>
         <div class="cabox" id="caBox">CA <b class="ca-val">deploying · brains still curing</b></div>
       </div>
-      <p class="sub">we took the brains out of twenty insects and taught every one of them to read a chart. the fly brain refreshes the page four hundred times a minute, the ant brain will not close a position until the whole colony agrees, and the moth brain buys whatever is glowing the brightest.</p>
-      <p class="sub">none of them will explain themselves twice. pick one, plug it in, and watch what a nervous system the size of a poppy seed does with your entire account.</p>
+      <p class="sub">every agent on this board is a trading bot running on a mapped insect brain instead of a model. the fly agent refreshes the chart four hundred times a minute, the ant agent will not close a position until a colony that does not exist confirms it, and the moth agent buys whatever is glowing the brightest on the board.</p>
+      <p class="sub">they all talk, none of them explain themselves twice. deploy one, read what it says before every entry, and watch what a nervous system the size of a poppy seed does with an entire account.</p>
     </div>
     <div class="brainwrap">
       <div class="brainbox" id="brainBox">
-        <img src="brain.webp" alt="the donor brain, still warm, currently hosting nobody">
+        <img src="fly.webp" alt="agent zero, the first insect brain anyone connected to a market">
         <canvas id="neu"></canvas>
         <div id="drop"></div>
-        <div class="poke">poke the brain · it pays</div>
+        <div class="poke">poke the fly · it pays</div>
       </div>
     </div>
   </div>
@@ -288,10 +291,10 @@ footer .sp{flex:1}
 <section id="lab">
   <div class="wrap">
     <div class="shead">
-      <h2>THE BRAIN SHELF</h2>
-      <span id="shelfCount">20 BRAINS · ALL LIVE</span>
+      <h2>THE AGENT ROSTER</h2>
+      <span id="shelfCount">20 AGENTS · ALL LIVE</span>
       <div class="sp"></div>
-      <span>CLICK ONE TO PLUG IT IN</span>
+      <span>CLICK ONE TO DEPLOY IT</span>
     </div>
     <div class="grid" id="grid"></div>
   </div>
@@ -301,7 +304,7 @@ footer .sp{flex:1}
   <div class="wrap">
     <div class="shead">
       <h2>THE TERMINAL</h2>
-      <span id="tstate">NO BRAIN CONNECTED</span>
+      <span id="tstate">NO AGENT DEPLOYED</span>
       <div class="sp"></div>
       <span>8 SIGNALS PER SESSION</span>
     </div>
@@ -309,9 +312,9 @@ footer .sp{flex:1}
       <div class="tbar">
         <div class="pill">PAIR <b>BBRAIN/USD</b></div>
         <div class="pill">FEED <b id="feedState">LIVE</b></div>
-        <div class="pill">OPERATOR <b id="opName">—</b></div>
+        <div class="pill">AGENT <b id="opName">—</b></div>
         <div class="sp"></div>
-        <button class="btn ghost" id="swapBtn">SWAP BRAIN</button>
+        <button class="btn ghost" id="swapBtn">SWAP AGENT</button>
       </div>
       <div class="tgrid">
         <div class="chartwrap">
@@ -323,51 +326,51 @@ footer .sp{flex:1}
             <div class="stat"><i>SIGNALS</i><b id="sSig">0 / 8</b></div>
             <div class="stat"><i>SESSION PNL</i><b id="sPnl">+0.00%</b></div>
             <div class="stat"><i>POSITION</i><b id="sPos">FLAT</b></div>
-            <div class="stat"><i>BRAIN TEMP</i><b id="sTmp">CALM</b></div>
+            <div class="stat"><i>AGENT TEMP</i><b id="sTmp">CALM</b></div>
           </div>
           <div id="log"></div>
         </div>
       </div>
       <div class="deck" id="deck">
         <div class="who">
-          <img id="deckImg" src="b-fly.webp" alt="the brain currently at the desk">
-          <div><i>AT THE DESK</i><b id="deckName">NOBODY</b></div>
+          <img id="deckImg" src="b-fly.webp" alt="the agent currently holding the account">
+          <div><i>AGENT ONLINE</i><b id="deckName">NOBODY</b><em id="deckRole">roster idle</em></div>
         </div>
         <div class="sig">
           <div class="ln" id="sigLn">STANDING BY</div>
-          <p id="sigTx">Pick a brain from the shelf above and it will sit down here and start calling trades.</p>
+          <p id="sigTx">Deploy an agent from the roster above and it will take the desk here and start calling trades.</p>
         </div>
         <div class="acts">
           <button class="btn cy" id="yesBtn">LET IT COOK</button>
           <button class="btn no" id="noBtn">SWAT IT</button>
         </div>
       </div>
-      <div class="hint" id="hint">The brain proposes, you approve. Approve it and the trade goes live on the chart for a few candles. Swat it and the brain gets warmer, louder and a great deal less careful.</div>
+      <div class="hint" id="hint">The agent proposes, you approve. Approve it and the trade goes live on the chart for a few candles. Swat it and the agent runs hotter, louder and a great deal less careful.</div>
     </div>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div class="shead"><h2>FIELD NOTES</h2><span>FROM THE SHELF</span></div>
+    <div class="shead"><h2>FIELD NOTES</h2><span>FROM THE RACK</span></div>
     <div class="notes">
       <div class="note">
         <img src="b-moth.webp" alt="moth brain, permanently pointed at the brightest green candle on the board">
-        <h4>THE MOTH DOES NOT DIVERSIFY</h4>
-        <p class="tag">SHELF · SLOT 17</p>
-        <p>It found one glowing thing on the board and it has been walking into it since Tuesday. Every time we move the terminal it finds the light again within nine seconds. Best win rate on the shelf, worst reasoning ever recorded.</p>
+        <h4>LUMEN DOES NOT DIVERSIFY</h4>
+        <p class="tag">AGENT-17 · MOTH BRAIN</p>
+        <p>It found one glowing thing on the board and it has been walking into it since Tuesday. Every time the terminal is moved it finds the light again within nine seconds. Best win rate on the roster, worst reasoning ever logged.</p>
       </div>
       <div class="note">
         <img src="b-ant.webp" alt="ant brain, waiting for a colony that is not coming">
-        <h4>THE ANT WANTS A COMMITTEE</h4>
-        <p class="tag">SHELF · SLOT 11</p>
+        <h4>COLONY WANTS A COMMITTEE</h4>
+        <p class="tag">AGENT-11 · ANT BRAIN</p>
         <p>It will not open a position until eleven other ants confirm the entry, and there are no other ants, so it mostly sits there emitting a very faint chemical complaint. When it finally does trade it never closes early. Not once.</p>
       </div>
       <div class="note">
         <img src="b-mosquito.webp" alt="mosquito brain, smelling a wallet somewhere in the building">
-        <h4>THE MOSQUITO SMELLS YOUR WALLET</h4>
-        <p class="tag">SHELF · SLOT 06</p>
-        <p>It does not read charts. It reads whoever is holding the most and moves in that direction, which is either genius or a crime depending on the week. Keep the sound on for this one, you will hear it coming.</p>
+        <h4>VEIN SMELLS YOUR WALLET</h4>
+        <p class="tag">AGENT-06 · MOSQUITO BRAIN</p>
+        <p>It does not read charts. It reads whoever is holding the most and moves in behind them, which is either genius or a crime depending on the week. Keep the sound on for this one, you will hear it coming.</p>
       </div>
     </div>
   </div>
@@ -375,12 +378,12 @@ footer .sp{flex:1}
 
 <section>
   <div class="wrap">
-    <div class="shead"><h2>THE SPEC SHEET</h2><span>WHAT IS IN THE JAR</span></div>
+    <div class="shead"><h2>THE SPEC SHEET</h2><span>WHAT IS IN THE RACK</span></div>
     <div class="specs">
-      <div class="spec"><i>SUPPLY</i><b>1,000,000,000</b><p>One billion, counted once by the ant brain and never recounted because it took six days and it refused to be interrupted.</p></div>
-      <div class="spec"><i>LIQUIDITY</i><b>BURNED</b><p>The firefly brain was holding the lighter and nobody told it to stop. There is nothing left to pull and nowhere to pull it to.</p></div>
-      <div class="spec"><i>TAX</i><b>0 / 0</b><p>Nothing on the way in, nothing on the way out. The twenty of them agreed on this instantly, which has never happened before.</p></div>
-      <div class="spec"><i>OWNERSHIP</i><b>RENOUNCED</b><p>Signed over to the shelf. Technically the scorpion brain holds the keys, and it has been asleep in a dark corner since launch.</p></div>
+      <div class="spec"><i>SUPPLY</i><b>1,000,000,000</b><p>One billion, counted once by COLONY and never recounted, because it took six days and the agent refused to be interrupted.</p></div>
+      <div class="spec"><i>LIQUIDITY</i><b>BURNED</b><p>BEACON was holding the lighter and nobody told it to stop. There is nothing left to pull and nowhere to pull it to.</p></div>
+      <div class="spec"><i>TAX</i><b>0 / 0</b><p>Nothing on the way in, nothing on the way out. All twenty agents agreed on this instantly, which has never happened before or since.</p></div>
+      <div class="spec"><i>OWNERSHIP</i><b>RENOUNCED</b><p>Signed over to the roster. Technically TAILRISK holds the keys, and it has been asleep in a dark corner of the rack since launch.</p></div>
     </div>
   </div>
 </section>
@@ -389,25 +392,25 @@ footer .sp{flex:1}
   <div class="wrap hb" style="padding:0">
     <div class="logo"><i></i>BUG BRAIN · $BBRAIN</div>
     <div class="sp"></div>
-    <span>20 BRAINS · ALL LIVE · ALL TRADING</span>
+    <span>20 AGENTS · 20 BRAINS · ALL LIVE</span>
     <a class="btn ghost xLink" href="#" target="_blank" rel="noopener">X</a>
   </div>
 </footer>
 
 <div id="inst"><div class="box">
-  <h3 id="instName">PLUGGING IN</h3>
+  <h3 id="instName">DEPLOYING</h3>
   <div style="font-size:11px;letter-spacing:.18em;color:var(--dim)" id="instSub">SYNAPSE HANDSHAKE</div>
   <div class="pb"><b id="instBar"></b></div>
   <div class="lines" id="instLines"></div>
 </div></div>
 
 <div id="res"><div class="card">
-  <img id="resImg" src="b-fly.webp" alt="the brain that just finished its session">
+  <img id="resImg" src="b-fly.webp" alt="the agent that just finished its session">
   <h3 id="resTitle">SESSION CLOSED</h3>
   <div class="pnl" id="resPnl">+0.00%</div>
   <p id="resTx"></p>
   <div class="cta" style="justify-content:center">
-    <button class="btn" id="againBtn">PICK ANOTHER BRAIN</button>
+    <button class="btn" id="againBtn">DEPLOY ANOTHER AGENT</button>
     <button class="btn ghost" id="closeRes">CLOSE</button>
   </div>
 </div></div>
@@ -416,7 +419,7 @@ footer .sp{flex:1}
 <script>
 /* ============ SETTINGS ============ */
 window.CONTRACT = "";      /* адрес контракта */
-window.TWITTER  = "https://x.com/Bugbrain_xx";      /* ссылка на X */
+window.TWITTER  = "";      /* ссылка на X */
 window.BUY_URL  = "";      /* ссылка на покупку */
 /* ================================== */
 
@@ -523,7 +526,7 @@ document.addEventListener("pointerdown",kick,{once:false});
 document.addEventListener("keydown",kick,{once:false});
 
 /* ---------------- marquee ---------------- */
-var MQ=["brain shelf fully stocked","fly brain has refreshed the chart 19,441 times today","ant brain still waiting on the colony","moth brain long the brightest candle","scorpion brain asleep, positions open","mosquito brain can smell your wallet from the lobby","cricket brain only trades after dark","firefly brain burned the liquidity, on purpose","termite brain is eating the support level","mantis brain holds everything very still and then does not"];
+var MQ=["all twenty agents online","tickfly has refreshed the chart 19,441 times today","colony still waiting on a confirmation that is not coming","lumen is long the brightest candle on the board","tailrisk asleep, positions open","vein can smell your wallet from the lobby","nightshift will not trade before sunset","beacon burned the liquidity, on purpose","hollow is eating the support level from the inside","still-1 has not moved in six hours"];
 (function(){
   var s=MQ.map(function(x){ return "<b>◆</b> "+x+" "; }).join("");
   document.getElementById("mqin").innerHTML=s+s;
@@ -531,45 +534,45 @@ var MQ=["brain shelf fully stocked","fly brain has refreshed the chart 19,441 ti
 
 /* ---------------- brains ---------------- */
 var BRAINS=[
- {id:"fly",n:"FLY",sp:96,rk:82,fc:14,bias:.10,line:"Sees the chart at four hundred frames a second and understands none of them. Enters, exits, enters again before your eyes have refreshed once.",
+ {id:"fly",n:"FLY",cn:"TICKFLY",role:"HIGH-FREQUENCY SCALPER",nn:"135,000",sp:96,rk:82,fc:14,bias:.10,line:"Sees the chart at four hundred frames a second and understands none of them. Enters, exits, enters again before your eyes have refreshed once.",
   r:["something moved on the left side of the screen, going long","exited by accident, re-entering immediately","this candle smelled edible","saw eleven versions of this trade at once, taking all of them"]},
- {id:"bee",n:"BEE",sp:62,rk:38,fc:88,bias:.22,line:"Works a strict route and files a report on every flower it touches. It will not deviate from the plan even when the plan is clearly on fire.",
+ {id:"bee",n:"BEE",cn:"HIVE-9",role:"ROUTE TRADER · DCA",nn:"960,000",sp:62,rk:38,fc:88,bias:.22,line:"Works a strict route and files a report on every flower it touches. It will not deviate from the plan even when the plan is clearly on fire.",
   r:["this level was profitable last visit, returning as scheduled","the hive voted, we are adding here","pollen count on this candle is unusually high","dancing the entry to the others, hold on"]},
- {id:"butterfly",n:"BUTTERFLY",sp:34,rk:56,fc:22,bias:.14,line:"Used to be a caterpillar that lost everything, came back gorgeous and completely unbothered. Trades entirely on how the chart makes it feel today.",
+ {id:"butterfly",n:"BUTTERFLY",cn:"MORPH",role:"DRAWDOWN RECOVERY",nn:"200,000",sp:34,rk:56,fc:22,bias:.14,line:"Used to be a caterpillar that lost everything, came back gorgeous and completely unbothered. Trades entirely on how the chart makes it feel today.",
   r:["the shape of this pullback is beautiful, going long","i have been through worse than this drawdown","flapping here, something big happens somewhere later","the colors agree with me"]},
- {id:"mantis",n:"MANTIS",sp:20,rk:70,fc:96,bias:.18,line:"Holds absolutely still for six hours and then takes the entire position in one motion. There is no warning and there is no partial fill.",
+ {id:"mantis",n:"MANTIS",cn:"STILL-1",role:"SINGLE-ENTRY SNIPER",nn:"1,100,000",sp:20,rk:70,fc:96,bias:.18,line:"Holds absolutely still for six hours and then takes the entire position in one motion. There is no warning and there is no partial fill.",
   r:["waited long enough, taking it now","the candle came within reach, that was its mistake","striking, do not talk to me","one entry is all this setup deserves"]},
- {id:"ladybug",n:"LADYBUG",sp:48,rk:24,fc:64,bias:.30,line:"Genuinely lucky and genuinely unaware of it. Every entry it takes looks wrong on the chart and somehow settles green anyway.",
+ {id:"ladybug",n:"LADYBUG",cn:"LUCK-7",role:"RANDOM ENTRY ENGINE",nn:"180,000",sp:48,rk:24,fc:64,bias:.30,line:"Genuinely lucky and genuinely unaware of it. Every entry it takes looks wrong on the chart and somehow settles green anyway.",
   r:["feeling fortunate about this one","counted the spots, seven means long","landed on someone, they said it was good luck","this is the lucky candle, i can tell"]},
- {id:"mosquito",n:"MOSQUITO",sp:84,rk:90,fc:40,bias:.08,line:"Does not read charts at all. It reads whoever is holding the most and quietly moves in behind them at three in the morning.",
+ {id:"mosquito",n:"MOSQUITO",cn:"VEIN",role:"WHALE TRACKER",nn:"220,000",sp:84,rk:90,fc:40,bias:.08,line:"Does not read charts at all. It reads whoever is holding the most and quietly moves in behind them at three in the morning.",
   r:["following the big wallet, do not ask how i found it","this one is warm, going in","found a vein of liquidity, drinking","nobody noticed the entry, that is the point"]},
- {id:"dragonfly",n:"DRAGONFLY",sp:90,rk:44,fc:92,bias:.34,line:"Ninety-five percent hit rate in the wild and it knows the number. It only takes trades it has already finished calculating three seconds ago.",
+ {id:"dragonfly",n:"DRAGONFLY",cn:"INTERCEPT",role:"PRECISION INTERCEPTOR",nn:"640,000",sp:90,rk:44,fc:92,bias:.34,line:"Ninety-five percent hit rate in the wild and it knows the number. It only takes trades it has already finished calculating three seconds ago.",
   r:["intercept computed, this fill is already mine","i do not miss, taking the entry","tracked it across four candles, closing the gap","the exit is priced before the entry"]},
- {id:"beetle",n:"BEETLE",sp:30,rk:18,fc:72,bias:.24,line:"Armour-plated and profoundly boring, which is exactly why it is still here. Sizes down, holds through everything, complains about nothing.",
+ {id:"beetle",n:"BEETLE",cn:"CARAPACE",role:"DRAWDOWN SURVIVOR",nn:"310,000",sp:30,rk:18,fc:72,bias:.24,line:"Armour-plated and profoundly boring, which is exactly why it is still here. Sizes down, holds through everything, complains about nothing.",
   r:["adding a small one, i can carry the drawdown","this shell has survived worse candles","slow entry, slow exit, that is the whole system","hedged under a rock, nobody can see me"]},
- {id:"spider",n:"SPIDER",sp:40,rk:66,fc:86,bias:.20,line:"Never chases anything. It builds a level, sits in the middle of it, and waits for price to walk directly into the thing it already made.",
+ {id:"spider",n:"SPIDER",cn:"WEB-4",role:"LIMIT-ORDER TRAPPER",nn:"600,000",sp:40,rk:66,fc:86,bias:.20,line:"Never chases anything. It builds a level, sits in the middle of it, and waits for price to walk directly into the thing it already made.",
   r:["the web is set at this level, waiting","something touched the line, moving in","wrapped this position for later","i did not chase it, it came to me"]},
- {id:"scorpion",n:"SCORPION",sp:26,rk:94,fc:58,bias:.06,line:"Survives on nothing for a year and then does something unforgivable in a single tick. Glows faintly under the terminal lights, which is unsettling.",
+ {id:"scorpion",n:"SCORPION",cn:"TAILRISK",role:"DORMANT · THEN LEVERAGE",nn:"420,000",sp:26,rk:94,fc:58,bias:.06,line:"Survives on nothing for a year and then does something unforgivable in a single tick. Glows faintly under the terminal lights, which is unsettling.",
   r:["been flat for months, now leveraged","this position has a tail on it","went in under the rock, going in hard","one bad move from either of us ends this"]},
- {id:"ant",n:"ANT",sp:44,rk:20,fc:98,bias:.26,line:"Refuses to open anything until eleven other ants confirm the entry, and there are no other ants. Once it is finally in, it never closes early.",
+ {id:"ant",n:"ANT",cn:"COLONY",role:"CONSENSUS BOT",nn:"250,000",sp:44,rk:20,fc:98,bias:.26,line:"Refuses to open anything until eleven other ants confirm the entry, and there are no other ants. Once it is finally in, it never closes early.",
   r:["waiting on colony confirmation, still waiting","carrying a position forty times my own size","the trail says this way, the trail is never wrong","committed, i do not know how to quit"]},
- {id:"grasshopper",n:"GRASSHOPPER",sp:76,rk:74,fc:30,bias:.12,line:"Covers enormous distance in one leap and has no idea where it will land. Every trade is an all-or-nothing jump into the next green field.",
+ {id:"grasshopper",n:"GRASSHOPPER",cn:"LEAP",role:"ALL-IN ROTATOR",nn:"400,000",sp:76,rk:74,fc:30,bias:.12,line:"Covers enormous distance in one leap and has no idea where it will land. Every trade is an all-or-nothing jump into the next green field.",
   r:["jumping, will find out where in a second","cleared the whole range in one move","this field is finished, moving to the next","legs are loaded, going long"]},
- {id:"caterpillar",n:"CATERPILLAR",sp:16,rk:28,fc:76,bias:.28,line:"Accumulates constantly and never sells anything. It says it is building toward something and, annoyingly, it usually is.",
+ {id:"caterpillar",n:"CATERPILLAR",cn:"INSTAR",role:"ACCUMULATOR · NEVER SELLS",nn:"90,000",sp:16,rk:28,fc:76,bias:.28,line:"Accumulates constantly and never sells anything. It says it is building toward something and, annoyingly, it usually is.",
   r:["eating this level, all of it","buying, buying, still buying","i become something else if i hold long enough","slow is fine, i have the whole leaf"]},
- {id:"stagbeetle",n:"STAG BEETLE",sp:36,rk:80,fc:52,bias:.16,line:"Shows up to every candle looking for a fight and picks the biggest one on the board. Wins about half of them, loudly, in front of everyone.",
+ {id:"stagbeetle",n:"STAG BEETLE",cn:"HORNS",role:"RESISTANCE BRAWLER",nn:"330,000",sp:36,rk:80,fc:52,bias:.16,line:"Shows up to every candle looking for a fight and picks the biggest one on the board. Wins about half of them, loudly, in front of everyone.",
   r:["locking horns with this resistance","the bigger the candle the better the fight","throwing this level off the branch","i am not flipping over, you are"]},
- {id:"firefly",n:"FIREFLY",sp:58,rk:48,fc:44,bias:.32,line:"Signals its entries in advance by glowing, which is a terrible idea and a beautiful one. Everyone front-runs it and it does not mind at all.",
+ {id:"firefly",n:"FIREFLY",cn:"BEACON",role:"SIGNAL BROADCASTER",nn:"260,000",sp:58,rk:48,fc:44,bias:.32,line:"Signals its entries in advance by glowing, which is a terrible idea and a beautiful one. Everyone front-runs it and it does not mind at all.",
   r:["lighting up, everyone can see the entry","signalling long, join if you want","blinked twice, that means size","the dark part of the chart is where i work"]},
- {id:"wasp",n:"WASP",sp:80,rk:88,fc:60,bias:.10,line:"Aggressive without provocation and fully capable of doing it again. It does not scale out, it does not apologise, it just re-enters.",
+ {id:"wasp",n:"WASP",cn:"STING",role:"AGGRESSIVE RE-ENTRY",nn:"290,000",sp:80,rk:88,fc:60,bias:.10,line:"Aggressive without provocation and fully capable of doing it again. It does not scale out, it does not apologise, it just re-enters.",
   r:["hitting this level again, and again","no reason, i am simply going short","came back for a second entry","the position is angry now"]},
- {id:"moth",n:"MOTH",sp:66,rk:86,fc:8,bias:.36,line:"Found one glowing thing on the board and has been walking into it since Tuesday. Best win rate on the shelf, worst reasoning ever recorded.",
+ {id:"moth",n:"MOTH",cn:"LUMEN",role:"MOMENTUM CHASER",nn:"210,000",sp:66,rk:86,fc:8,bias:.36,line:"Found one glowing thing on the board and has been walking into it since Tuesday. Best win rate on the roster, worst reasoning ever recorded.",
   r:["this candle is the brightest one, going in","the light says buy","i cannot look away from this green","circling the top, entering"]},
- {id:"termite",n:"TERMITE",sp:38,rk:62,fc:82,bias:.22,line:"Eats the support level from the inside for weeks and nobody notices until the floor is gone. Patient in the way that ruins people.",
+ {id:"termite",n:"TERMITE",cn:"HOLLOW",role:"SUPPORT ERODER",nn:"170,000",sp:38,rk:62,fc:82,bias:.22,line:"Eats the support level from the inside for weeks and nobody notices until the floor is gone. Patient in the way that ruins people.",
   r:["chewing through this support quietly","the structure is hollow now, shorting","one grain at a time, then all of it","nothing looks wrong from the outside yet"]},
- {id:"cricket",n:"CRICKET",sp:54,rk:34,fc:68,bias:.20,line:"Only trades after dark and narrates everything it does at volume. When it goes quiet, close the terminal and go outside.",
+ {id:"cricket",n:"CRICKET",cn:"NIGHTSHIFT",role:"NIGHT SESSIONS ONLY",nn:"280,000",sp:54,rk:34,fc:68,bias:.20,line:"Only trades after dark and narrates everything it does at volume. When it goes quiet, close the terminal and go outside.",
   r:["night session open, chirping the entry","counted the ticks, temperature says long","loud about this one, everyone hears it","silence means i closed already"]},
- {id:"stickbug",n:"STICK BUG",sp:12,rk:40,fc:94,bias:.24,line:"Impossible to find on the chart and it prefers things that way. It has been in the same position since March and refuses to say which one.",
+ {id:"stickbug",n:"STICK BUG",cn:"INVISIBLE",role:"POSITION CONCEALER",nn:"150,000",sp:12,rk:40,fc:94,bias:.24,line:"Impossible to find on the chart and it prefers things that way. It has been in the same position since March and refuses to say which one.",
   r:["you cannot see the position, that is the edge","holding since march, no updates","pretending to be part of the trendline","moving one pixel per candle, on purpose"]}
 ];
 var GEN=["the volume looks funny here","nobody else is taking this, so i am","the last one worked, doing it again","this level owes me","reading the book, it says go","gut says size up"];
@@ -578,16 +581,19 @@ var grid=document.getElementById("grid");
 BRAINS.forEach(function(b,i){
   var el=document.createElement("button");
   el.className="bcard"; el.type="button"; el.dataset.id=b.id;
+  var num="AGENT-"+(i+1<10?"0":"")+(i+1);
   el.innerHTML=
-    '<div class="top"><span class="nm">'+b.n+'</span><span class="lv"><i></i>LIVE</span></div>'+
-    '<img src="b-'+b.id+'.webp" alt="'+b.n.toLowerCase()+' brain, slot '+(i+1<10?"0":"")+(i+1)+', currently awake">'+
+    '<div class="top"><span class="nm">'+num+' · '+b.cn+'</span><span class="lv"><i></i>LIVE</span></div>'+
+    '<img src="b-'+b.id+'.webp" alt="'+b.cn.toLowerCase()+', the agent running on a '+b.n.toLowerCase()+' brain">'+
+    '<div class="role">'+b.role+'</div>'+
     '<p>'+b.line+'</p>'+
+    '<div class="meta">brain: '+b.n.toLowerCase()+' · '+b.nn+' neurons</div>'+
     '<div class="bars">'+
       '<div class="bar"><u>SPD</u><span><b style="width:'+b.sp+'%"></b></span></div>'+
       '<div class="bar r"><u>RISK</u><span><b style="width:'+b.rk+'%"></b></span></div>'+
       '<div class="bar f"><u>FOCUS</u><span><b style="width:'+b.fc+'%"></b></span></div>'+
     '</div>'+
-    '<div class="plug">PLUG IT IN ▸</div>';
+    '<div class="plug">DEPLOY AGENT ▸</div>';
   el.addEventListener("click",function(){ plugIn(b.id); });
   el.addEventListener("mouseenter",function(){ tone(900+i*13,1300,.05,"square",.02); });
   grid.appendChild(el);
@@ -680,11 +686,11 @@ function plugIn(id){
   document.querySelectorAll(".bcard").forEach(function(e){ e.classList.toggle("sel",e.dataset.id===id); });
   var box=document.getElementById("inst");
   box.style.display="flex";
-  document.getElementById("instName").textContent="PLUGGING IN THE "+b.n+" BRAIN";
-  document.getElementById("instSub").textContent="SLOT "+(BRAINS.indexOf(b)+1)+" · SYNAPSE HANDSHAKE";
+  document.getElementById("instName").textContent="DEPLOYING "+b.cn;
+  document.getElementById("instSub").textContent="AGENT-"+(BRAINS.indexOf(b)+1<10?"0":"")+(BRAINS.indexOf(b)+1)+" · "+b.n+" BRAIN · SYNAPSE HANDSHAKE";
   var bar=document.getElementById("instBar"), lines=document.getElementById("instLines");
   lines.innerHTML=""; bar.style.width="0%";
-  var steps=["opening the jar","counting neurons · "+(120+Math.floor(Math.random()*900)),"wiring optic lobe to the price feed","teaching it what a candle is","it has opinions now","handing it the account"];
+  var steps=["opening the jar","loading "+b.id+"-v1 weights","mapping "+b.nn+" neurons to the price feed","wiring optic lobe to BBRAIN/USD","it has opinions now","handing it the account"];
   var k=0;
   buzz(.35,70,.05);
   var iv=setInterval(function(){
@@ -701,17 +707,18 @@ function startSession(b){
   CUR=b; sig=0; pnl=0; temp=0; POS=null; waiting=false; PEND=null; SESS++;
   var my=SESS;
   logEl.innerHTML="";
-  document.getElementById("opName").textContent=b.n;
-  document.getElementById("deckName").textContent=b.n+" BRAIN";
+  document.getElementById("opName").textContent=b.cn;
+  document.getElementById("deckName").textContent=b.cn;
+  document.getElementById("deckRole").textContent=b.role+" · "+b.n.toLowerCase()+" brain";
   document.getElementById("deckImg").src="b-"+b.id+".webp";
-  document.getElementById("tstate").textContent=b.n+" BRAIN CONNECTED";
-  document.getElementById("hint").textContent="The "+b.n.toLowerCase()+" brain is at the desk. It proposes, you approve. Eight signals and the session closes.";
+  document.getElementById("tstate").textContent=b.cn+" DEPLOYED · "+b.n+" BRAIN";
+  document.getElementById("hint").textContent=b.cn+" is online and holding the account. It proposes, you approve. Eight signals and the session closes.";
   setStat();
-  log('<b>'+b.n+' brain</b> sat down at the terminal.',"c");
-  log("it looked at the chart for the first time and did not blink.","");
+  log('<b>'+b.cn+'</b> online · '+b.role.toLowerCase()+' · running on a '+b.n.toLowerCase()+' brain.',"c");
+  log("it read the last forty candles in one frame and did not blink.","");
   tone(300,900,.25,"square",.05);
   document.getElementById("sigLn").textContent="WARMING UP";
-  document.getElementById("sigTx").textContent="it is reading the last forty candles. give it a second.";
+  document.getElementById("sigTx").textContent="the agent is warming up on the last forty candles. give it a second.";
   document.getElementById("terminal").scrollIntoView({behavior:"smooth",block:"start"});
   setTimeout(function(){ if(my===SESS) nextSignal(); },1600);
 }
@@ -725,7 +732,7 @@ function nextSignal(){
   waiting=true;
   PEND={dir:dir,lev:lev,reason:reason};
   document.getElementById("sigLn").textContent="SIGNAL "+(sig+1)+" / 8 · "+(dir>0?"LONG":"SHORT")+" "+lev+"x";
-  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> "'+reason+'" — '+(dir>0?"long":"short")+" "+lev+"x on bbrain/usd.";
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.cn.toLowerCase()+':</u> "'+reason+'" — '+(dir>0?"long":"short")+" "+lev+"x on bbrain/usd.";
   buzz(.12,dir>0?260:190,.045);
   log("<b>signal "+(sig+1)+"</b> · "+(dir>0?"long":"short")+" "+lev+"x — "+reason,"m");
 }
@@ -739,18 +746,18 @@ document.getElementById("yesBtn").onclick=function(){
   log("you let it cook. position open at "+POS.entry.toFixed(4)+".","g");
   tone(420,880,.18,"square",.05); setStat();
   document.getElementById("sigLn").textContent="POSITION LIVE";
-  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> in. holding for '+POS.life+' candles. do not touch anything.';
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.cn.toLowerCase()+':</u> in. holding for '+POS.life+' candles. do not touch anything.';
 };
 document.getElementById("noBtn").onclick=function(){
   if(!CUR){ nudge(); return; }
   if(!waiting||!PEND) return;
   waiting=false; sig++; temp++;
-  var hot=["it did not enjoy that.","it is warmer now.","the brain made a noise.","it wrote something down about you.","it is not going to forget this one."];
+  var hot=["the agent did not enjoy that.","it is running warmer now.","something in the jar made a noise.","it logged this one against you.","it is not going to forget this one."];
   log("you swatted it. "+hot[Math.min(temp-1,hot.length-1)],"r");
   noise(.12,.06); tone(180,90,.2,"sawtooth",.05);
   setStat();
   document.getElementById("sigLn").textContent="SIGNAL DECLINED";
-  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> fine. the next one is bigger.';
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.cn.toLowerCase()+':</u> fine. the next one is bigger.';
   var my=SESS;
   setTimeout(function(){ if(my!==SESS) return; if(sig>=8) endSession(); else nextSignal(); },1600);
 };
@@ -772,7 +779,7 @@ function resolvePos(){
   else tone(300,120,.3,"sawtooth",.05);
   POS=null; setStat();
   document.getElementById("sigLn").textContent="FLAT";
-  document.getElementById("sigTx").innerHTML='<u>'+CUR.n.toLowerCase()+':</u> '+(chg>=0?"that was supposed to happen.":"that was not supposed to happen.");
+  document.getElementById("sigTx").innerHTML='<u>'+CUR.cn.toLowerCase()+':</u> '+(chg>=0?"that was supposed to happen.":"that was not supposed to happen.");
   var my=SESS;
   setTimeout(function(){ if(my!==SESS) return; if(sig>=8) endSession(); else nextSignal(); },1600);
 }
@@ -780,16 +787,16 @@ function endSession(){
   if(!CUR) return;
   var b=CUR, p=pnl;
   document.getElementById("resImg").src="b-"+b.id+".webp";
-  document.getElementById("resTitle").textContent=b.n+" BRAIN · SESSION CLOSED";
+  document.getElementById("resTitle").textContent=b.cn+" · SESSION CLOSED";
   var el=document.getElementById("resPnl");
   el.textContent=(p>=0?"+":"")+p.toFixed(2)+"%"; el.style.color=p>=0?"var(--li)":"var(--rd)";
-  var good=["It is going back on the shelf with the account intact and an expression you would describe as smug. It has already asked for a bigger size next session.",
-            "Eight signals, no hesitation, and it never once explained itself properly. The shelf is quietly furious about the numbers."];
+  var good=["It goes back on the roster with the account intact and an expression you would describe as smug. It has already requested a bigger size for the next session.",
+            "Eight signals, no hesitation, and it never once explained itself properly. The other nineteen agents are quietly furious about the numbers."];
   var bad=["It closed the session, turned around very slowly, and pointed at the swat button. Nobody is saying it was your fault out loud.",
            "The account survived, which is more than the brain expected. It would like to try again with fewer interruptions."];
   document.getElementById("resTx").textContent=(p>=0?good:bad)[Math.floor(Math.random()*2)];
   document.getElementById("res").style.display="flex";
-  document.getElementById("tstate").textContent="SESSION CLOSED · "+b.n+" BRAIN";
+  document.getElementById("tstate").textContent="SESSION CLOSED · "+b.cn;
   if(p>=0){ tone(523,523,.14,"triangle",.06); setTimeout(function(){ tone(659,659,.14,"triangle",.06); },140); setTimeout(function(){ tone(784,784,.3,"triangle",.06); },280); rainCoins(); }
   else { tone(300,110,.5,"sawtooth",.06); }
   CUR=null; POS=null; waiting=false;
